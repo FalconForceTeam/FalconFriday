@@ -1,5 +1,5 @@
 # FalconFriday
-TL;DR: Every two weeks on “Falcon Friday”, we’ll release (DTAP) hunting queries to detect offensive techniques.
+<b>TL;DR: Every two weeks on “Falcon Friday”, we’ll release (DTAP) hunting queries to detect offensive techniques.</b>
 
 As FalconForce, we are active in the “purple arena” — we want to practice as much defensive security as offensive security. Moreover, we want to share back to the community. Combining these two, we came up with the idea to develop hunting queries based on our offensive & defensive experience and share our “latest and greatest” hunting/alerting queries for everyone to use. We’ll start off with queries for Microsoft Defender ATP (DATP), but might expand to other tools in the future.
 Our plan
