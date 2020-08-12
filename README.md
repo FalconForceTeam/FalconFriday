@@ -1,11 +1,31 @@
 # FalconFriday
-<b>TL;DR: Every two weeks on “Falcon Friday”, we’ll release (DTAP) hunting queries to detect offensive techniques.</b>
+<b>TL;DR: We believe there isn't enough content available to detect advanced adversary techniques. That's why every two weeks on "Falcon Friday", we will release (DTAP) hunting queries to detect offensive techniques.</b>
 
-As FalconForce, we are active in the “purple arena” — we want to practice as much defensive security as offensive security. Moreover, we want to share back to the community. Combining these two, we came up with the idea to develop hunting queries based on our offensive & defensive experience and share our “latest and greatest” hunting/alerting queries for everyone to use. We’ll start off with queries for Microsoft Defender ATP (DATP), but might expand to other tools in the future.
-Our plan
+To give you an idea, we're going to release hunts for attacks such as:
 
-We will publish the KQL queries on this GitHub page. Each query will be aimed at detecting some specific technique as precisely as possible and linked to MITRE ATT&CK. We anticipate that some queries will have more than 1 variant, aimed at detecting the same attack in different ways with varying trade-offs. Similarly, we will document trade-offs for various options in a single query to give you the flexibility to gear towards more false positives or more false negatives.
+- DLL Injection
+- Procss Injection
+- COM Hijacking
+- .NET-to-JScript
+- Aborted MFA requests
+- Abuse of LOLBins
+- Misbehaving Office Applications
+- Process Hollowing
+- Unmanaged binaries running managed code
+- Anomalities in LDAP traffic 
+- Command execution using WMI
+- SMB NULL session attempts
+- etc
 
-Having said that, don’t expect to copy-paste the queries in your environment and be done with it. We will provide a foundation query which can detect a certain technique. However, you will still need to fine-tune/extend the query to your organization’s specifics to make it work in your environment and integrate into your monitoring solution.
+Stay tuned and let us know if there is any specific attack technique you want to detect.
 
-The queries will be free to use in any way you like, although we appreciate a reference back to @falconforceteam Twitter / FalconForce GitHub.
+# Background
+
+Our current plan is to release 1 or 2 hunting DATP queries every other week. The queries will be released on GitHub, accompanied by a short blog post on Medium detailing background, working of the query, the accuracy we expect, any possible variations or improvements, any catches and really anything else we deem relevant.
+Initially, we'll be working based on the excellent library of @spotheplanet's https://www.ired.team/ and release the queries specifically for DATP. Since [@olafhartong](https://github.com/olafhartong) is involved, we might release Sysmon hunts as well….we'll see how it goes.
+
+We will publish the KQL queries on GitHub. Each query will be aimed at detecting some specific technique as precisely as possible and linked to MITRE ATT&CK. We anticipate that some queries will have more than 1 variant, aimed at detecting the same attack in different ways with varying trade-offs. Similarly, we will document trade-offs for various options in a single query to give you the flexibility to gear towards more false positives or more false negatives. 
+
+Having said that, don't expect to copy-paste the queries in your environment and be done with it. We will provide a foundation query which can detect a certain technique. However, you will still need to fine-tune/extend  the query to your organization's specifics to make it work in your environment and integrate into your monitoring solution. 
+
+The queries will be free to use in any way you like, although we appreciate a reference back to [@falconforceteam](https://twitter.com/falconforceteam) Twitter / [FalconForce](https://github.com/falconforceteam) GitHub.
