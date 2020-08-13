@@ -4,7 +4,7 @@
 To give you an idea, we're going to release hunts for attacks such as:
 
 - DLL Injection
-- Procss Injection
+- Process Injection
 - COM Hijacking
 - .NET-to-JScript
 - Aborted MFA requests
@@ -12,7 +12,7 @@ To give you an idea, we're going to release hunts for attacks such as:
 - Misbehaving Office Applications
 - Process Hollowing
 - Unmanaged binaries running managed code
-- Anomalities in LDAP traffic 
+- Anomalies in LDAP traffic 
 - Command execution using WMI
 - SMB NULL session attempts
 - etc
