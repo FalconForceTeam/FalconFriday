@@ -7,7 +7,7 @@ These detections are heavily based on this [FireEye repository](github.com/firee
 
 ## Notes
 
-Omissions and additions have been applied to improve the fidelity for some of the rules. In their current state most rules have a pretty acceptable volume of results. They have been tested and validated against over 100k endpoints in several environments. *Additional tuning might still be required in your environment.*
+Omissions and additions have been applied to improve the fidelity for some of the rules. In their current state most rules have a pretty acceptable volume of results. They have been tested and validated in several environments. *Additional tuning might still be required in your environment.*
 
 Please keep in mind quite a few of these rules are heavily signature based and require additional research to be more resilient against behavior variations.
 
