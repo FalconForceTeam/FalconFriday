@@ -1,7 +1,7 @@
 # FireEye red_team_tool_countermeasures KQL queries
 
 ## Disclaimer
-These detections are heavily based on this [FireEye repository](github.com/fireeye/red_team_tool_countermeasures)
+These detections are heavily based on this [FireEye repository](https://github.com/fireeye/red_team_tool_countermeasures)
 
 *Please note we do not want to take credit for these detections, these are heavily based on the files as kindly and professionally supplied by the FireEye team. Secondly not all rules have been converted, partially since some of our previous FalconFriday rules already covered them and also since MDE does not have the same capabilities in terms of telemetry.*
 
