@@ -61,6 +61,7 @@ SecurityEvent
 ## Backup of CA private key - Rule 2
 ```C#
 SecurityEvent
+// Fill in the machine name of your CA
 | where EventID == 5059 and Computer contains "<YOUR CA MACHINE NAME>"
 | where EventData contains "%%2499" and EventData contains "%%2464"
 | extend EventData=parse_xml(EventData)
