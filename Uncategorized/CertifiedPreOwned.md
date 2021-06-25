@@ -3,7 +3,7 @@
 ## Background info
 The [excellent research](https://posts.specterops.io/certified-pre-owned-d95910965cd2) by [@harmj0y](https://twitter.com/harmj0y) and [@tifkin_](https://twitter.com/tifkin_) has resulted in some serious attacks possible against AD. The queries here are detection rules which are meant to work in a realistic production environment. 
 
-The full background of the queries are detailed [in this blog post](TODO).
+The full background of the queries are detailed [in this blog post](https://medium.com/falconforce/falconfriday-certified-pre-owned-0xff12-40f00a35e51a?source=friends_link&sk=9928aa6271bf59027687b850959ac265).
 
 
 ## TGTs requested with certificate authentication
