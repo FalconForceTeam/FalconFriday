@@ -18,7 +18,7 @@
 
 | Log Provider | Event ID | Event Name | ATT&CK Data Source |
 |---------|---------|----------|---------|
-|WindowsLog_Security|5143|||
+|WindowsLog_Security|5143| A network share object was modified | Network Share:Network Share Access|
 ---
 
 ## Technical description of the attack
