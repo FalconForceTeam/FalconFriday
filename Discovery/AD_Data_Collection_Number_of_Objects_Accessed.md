@@ -79,8 +79,7 @@ let ADObjectAccess=(
 );
 let AccessBaseline=(
     ADObjectAccess
-    | where TimeGenerated <= ago(timeframe)
-    | where TimeGenerated >= ago(timeframe + lookback_days)
+    | where TimeGenerated between (ago(timeframe + lookback_days)..ago(timeframe))
     | summarize BaselineObjectCount=count() by Account, bin(TimeGenerated,1d)
     | summarize PreviousMaxObjectPerDay=max(BaselineObjectCount) by Account
 );
@@ -102,4 +101,4 @@ ADObjectAccess
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
-| 1.0  | 2022-11-11| major | FalconFriday release. |
+| 1.1  | 2022-11-11| major | FalconFriday release. |
