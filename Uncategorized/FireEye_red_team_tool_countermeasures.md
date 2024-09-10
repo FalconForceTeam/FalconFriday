@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/hunts/FireEye_red_team_tool_countermeasures.md).
+
 # FireEye red_team_tool_countermeasures KQL queries
 
 ## Disclaimer

@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0488-ADWS_Connection_from_Process_Injection_Target-Win.md).
+
 # AWDS Connection from Process Injection Target
 
 ## Metadata

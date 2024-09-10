@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0161-Overly_permissive_security_group-AWS.md).
+
 # Overly permissive security group
 
 ## Metadata

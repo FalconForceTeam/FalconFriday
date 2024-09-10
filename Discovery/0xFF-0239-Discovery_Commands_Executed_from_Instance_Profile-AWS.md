@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0239-Discovery_Commands_Executed_from_Instance_Profile-AWS.md).
+
 # AWS Discovery Commands Executed from Instance Profile
 
 ## Metadata

@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0544-Script_Interpreter_Loading_DotNet_Assembly_From_Memory-Win.md).
+
 # Script Interpreter Loading DotNet Assembly From Memory
 
 ## Metadata

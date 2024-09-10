@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0003-LDAP_reconnaissance_via_search_filters-Win.md).
+
 # Active Directory Data Collection
 
 ## Metadata

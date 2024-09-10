@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0240-Instance_Profile_Credentials_Used_from_Unexpected_IP-AWS.md).
+
 # AWS Instance Profile Credentials Used from Unexpected IP
 
 ## Metadata

@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0236-Resource_Shared_with_Unknown_External_Account-AWS.md).
+
 # AWS Resource Shared with Unknown External Account
 
 ## Metadata

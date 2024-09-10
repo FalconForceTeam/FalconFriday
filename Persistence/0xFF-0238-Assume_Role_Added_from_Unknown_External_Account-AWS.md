@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0238-Assume_Role_Added_from_Unknown_External_Account-AWS.md).
+
 # AWS Assume Role Added from Unknown External Account
 
 ## Metadata

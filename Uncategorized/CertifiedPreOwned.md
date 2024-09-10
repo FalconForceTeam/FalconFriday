@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0298-TGT_requested_with_suspicious_certificate-Win.md).
+
 # Certified Pre-Owned
 
 ## Background info

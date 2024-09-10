@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0108-Large_number_of_AD_objects_accessed_by_user-Win.md).
+
 # Large number of AD objects accessed by user
 
 ## Metadata

@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0485-ADWS_Connection_from_Unexpected_Binary-Win.md).
+
 # ADWS Connection from Unexpected Binary
 
 ## Metadata

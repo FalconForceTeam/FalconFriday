@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/README.md).
+
 # FalconFriday
 <b>TL;DR: We believe there isn't enough content available to detect advanced adversary techniques. That's why reguarly on "Falcon Friday", we will release (Microsoft Defender for Endpoint - MDE) hunting queries to detect offensive techniques.</b>
 

@@ -1,3 +1,5 @@
+Note: You are viewing an old, archived version of this content. The latest version is available in the ['main' branch](https://github.com/FalconForceTeam/FalconFriday/blob/main/0xFF-0237-Password_Assigned_to_Existing_IAM_User-AWS.md).
+
 # Password Assigned to Existing AWS IAM User
 
 ## Metadata
