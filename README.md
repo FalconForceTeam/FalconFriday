@@ -1,5 +1,5 @@
 # FalconFriday
-<b>TL;DR: We believe there isn't enough content available to detect advanced adversary techniques. That's why reguarly on "Falcon Friday", we will release (Microsoft Defender for Endpoint - MDE) hunting queries to detect offensive techniques.</b>
+<b>TL;DR: We believe there isn't enough content available to detect advanced adversary techniques. That's why regularly on "Falcon Friday", we will release (Microsoft Defender for Endpoint - MDE) hunting queries to detect offensive techniques.</b>
 
 To give you an idea, we're going to release hunts for attacks such as:
 
