@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer, WindowsEndpoint
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -17,19 +15,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ImageLoaded||Module|Module Load|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceImageLoadEvents|ImageLoaded||Module|Module Load|
 ---
 
-## Technical description of the attack
+## Detection description
 This query identifies .cpl files being loaded and verifies if the corresponding file is suspicious by looking at the signature and global prevalence.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Adversaries may abuse control.exe to proxy execution of malicious payloads. .cpl files loaded by control.exe are actually .dll files renamed to .cpl and can execute arbitrary code.
 
 
@@ -42,7 +42,12 @@ Legitimate custom software might create a control panel item that is unsigned or
 
 
 ## Suggested Response Actions
-Verify whether the .cpl file loaded is part of a genuine business application. If not, it should be investigated if .cpl files have been abused by an attacker to bypass detection.
+Verify whether legitimate business or operational reasons require the load of the suspicious .cpl file.
+
+In case of a suspected breach or insider threat:
+* Verify the legitimacy of the .cpl file using static/dynamic analysis to determine its origin, intent and payload.
+* Review the latest activities performed by the account that initiated the load of the .cpl file and validate the permissions of the compromised account.
+* Investigate further execution of the process loading the .cpl file for signs of compromise on the affected machine or the network and consider isolating the compromised hosts.
 
 
 ## Detection Blind Spots
@@ -96,6 +101,7 @@ loadedDlls
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.7  | 2025-05-19| minor | Enhanced response plan actions. |
 | 1.6  | 2024-06-28| minor | Modified the usage of FileProfile to exclude results if the call to the FileProfile API has failed. |
 | 1.5  | 2023-01-03| minor | Lowered the case of hashes that are fed to the FileProfile function due to case sensitivity. |
 | 1.4  | 2022-11-01| minor | Use default_global_prevalence variable to allow customizing handling of empty GlobalPrevalence |

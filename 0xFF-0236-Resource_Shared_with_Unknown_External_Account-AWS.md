@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,22 +16,24 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AWS|ModifyImageAttribute||Application Log|Application Log Content|
-|AWS|ModifySnapshotAttribute||Application Log|Application Log Content|
-|AWS|ModifyDBSnapshotAttribute||Application Log|Application Log Content|
-|AWS|PutBucketPolicy||Application Log|Application Log Content|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AWS|AWSCloudTrail|ModifyImageAttribute||Application Log|Application Log Content|
+|AWS|AWSCloudTrail|ModifySnapshotAttribute||Application Log|Application Log Content|
+|AWS|AWSCloudTrail|ModifyDBSnapshotAttribute||Application Log|Application Log Content|
+|AWS|AWSCloudTrail|PutBucketPolicy||Application Log|Application Log Content|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for resources being shared with an external AWS account that is not on a list of known trusted accounts.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 When an attacker gains access to an account with access to AWS, they might abuse that account to share resources with an external account to extract data or to leave a backdoor that can be used at a later stage to re-gain access to the environment.
 
 
@@ -50,7 +50,7 @@ Confirm if the user responsible for the sharing has shared the resource for a va
 
 
 ## Detection Blind Spots
-None known.
+None expected.
 
 
 ## References
@@ -67,7 +67,7 @@ None known.
 ```C#
 let timeframe = 2*1h;
 let RuleId = "0236";
-let DedupFields = dynamic(["TimeGenerated", "AccountId"]);
+let DedupFields = dynamic(["TimeGenerated", "UserAccount"]);
 let TrustedAccounts= dynamic([]);
 let SharingEvents=(
     AWSCloudTrail
@@ -149,6 +149,7 @@ union ImageSharing, SnapshotSharing, DBSnapshotSharing, BucketSharing, LambdaSha
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.5  | 2025-05-23| minor | Updated dedup_fields to match the query output columns. |
 | 1.4  | 2023-11-13| minor | Additional context added. |
 | 1.3  | 2023-07-26| minor | Added a filter-out in the detection logic. |
 | 1.2  | 2022-08-31| minor | Entity mapping added. |

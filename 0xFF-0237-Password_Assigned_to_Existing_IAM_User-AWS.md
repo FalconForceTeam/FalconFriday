@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AWS|CreateLoginProfile||User Account|User Account Modification|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AWS|AWSCloudTrail|CreateLoginProfile||User Account|User Account Modification|
 ---
 
-## Technical description of the attack
+## Detection description
 This use case monitors for modifications in the AWS console access of an IAM user. Threat actors that gain access to an IAM user can enable the access to the AWS Management Console by abusing the 'CreateLoginProfile' API call without resetting the user's password thus remaining stealthy and gaining the ability to manipulate and control critical AWS resources.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 The AWS Management Console is a web-based interface for users to interact with and manage their AWS resources. It offers a centralized platform for configuring and monitoring various AWS services, making it convenient for accessing and controlling the cloud infrastructure.  When attackers enable the AWS Management Console for a user who initially lacked access, they can achieve unhindered control over AWS resources, allowing them to manipulate configurations, launch instances, modify security settings, and manage storage resources without detection. This unauthorized resource control can lead to disruptions in services, compromise data integrity, exfiltration of sensitive data and privilege escalation enabling more sophisticated and damaging actions, further compromising the organization's security posture.
 
 
@@ -49,7 +49,7 @@ There might be a business reason for assigning a console password to an existing
 
 
 ## Detection Blind Spots
-None known.
+None expected.
 
 
 ## References
@@ -101,7 +101,7 @@ AWSCloudTrail
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
-| 1.3  | 2023-11-11| major | Enriched descriptions and query. |
+| 1.3  | 2023-11-11| minor | Enriched descriptions and query. |
 | 1.2  | 2022-08-31| minor | Entity mapping added. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |
 | 1.0  | 2022-02-01| major | Initial version. |

@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** High
-
 ---
 
 ## ATT&CK Tags
@@ -17,19 +15,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AWS|AuthorizeSecurityGroupIngress||Cloud Service|Cloud Service Modification|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AWS|AWSCloudTrail|AuthorizeSecurityGroupIngress||Cloud Service|Cloud Service Modification|
 ---
 
-## Technical description of the attack
+## Detection description
 This query detects someone setting a security group with inbound rules allowing 0.0.0.0 or a subnet less than or equal to /16. It does it similarly with ipv6.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 An attacker on AWS might want to obtain access to a machine via SSH, RDP or another management protocol. Since properly configured servers are not internet-reachable, attackers have been observed to allow-list a very large range to provide themselves access to the resource.
 
 
@@ -46,7 +46,7 @@ Confirm if the user has indeed created an overly broad security group rule.
 
 
 ## Detection Blind Spots
-None known.
+None expected.
 
 
 ## References

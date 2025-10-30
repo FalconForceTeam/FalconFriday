@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,21 +16,22 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ConnectionSuccess||Network Traffic|Network Connection Creation|
-|MicrosoftThreatProtection|LogonSuccess||Logon Session|Logon Session Creation|
-|MicrosoftThreatProtection|||||
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceNetworkEvents|ConnectionSuccess||Network Traffic|Network Connection Creation|
+|MicrosoftThreatProtection|DeviceLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for successful NTLM network logins where the device name contained in the NTLM authentication message contains a device that is known to MDE, but the source IP address is different from the known source IP address for that specific device. This could indicate an attacker is relaying the NTLM authentication information. To remove false positives, this query also searches for an outgoing network connection from the initiator to the attacker.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 NTLM relay attacks can be used by an attacker to authenticate to a system by relaying NTLM credentials that are taken from a different system. In an NTLM relay attack three machines are involved: the initiator, the attacker and the target. The initiator initiates an NTLM session to the attacker, the attacker then relays the NTLM authentication information to the target.
 
 
@@ -96,6 +95,7 @@ DeviceNetworkEvents
 | extend ShortDeviceName=tolower(split(DeviceName,".")[0])
 | where ShortDeviceName in ((PotentialNTLMRelayLogins | project RemoteDeviceName))
 | lookup kind=inner PotentialNTLMRelayLogins on $left.ShortDeviceName == $right.RemoteDeviceName, $left.RemoteIP == $right.RemoteIP
+| extend HostName=tostring(split(DeviceName,".")[0]),DnsDomain=iif(DeviceName contains ".", substring(DeviceName, indexof(DeviceName, ".") + 1, strlen(DeviceName)),"")
 // Begin environment-specific filter.
 // End environment-specific filter.
 ```
@@ -105,5 +105,6 @@ DeviceNetworkEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.2  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.1  | 2023-12-04| minor | Extend Sentinel entity mapping. |
 | 1.0  | 2022-03-07| major | Initial version. |

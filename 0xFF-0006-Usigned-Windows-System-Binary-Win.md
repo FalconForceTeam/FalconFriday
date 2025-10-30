@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Process|Process Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for invocations of a number of commonly used and signed Windows binaries. It then finds invocations of these binaries where they are not properly signed.
+
 
 
 ## Permission required to execute the technique
 Administrator
 
-## Detection description
+
+## Description of the attack
 Attackers might alter system binaries to modify the binaries' behavior.
 
 

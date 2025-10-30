@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|SecurityEvents|5143||Network Share|Network Share Access|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|SecurityEvents|SecurityEvent|5143||Network Share|Network Share Access|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for event 5143, which is triggered when a share is created or changed and includes the share permissions. First it checks to see if this is an allow-listed share for the system (e.g., domain controller netlogon, print server print$, etc.) The share permissions are then checked against 'allow' rule (A) for a number of well-known overly permissive groups, like All Users, Guests, Authenticated Users, etc. If these are found, an alert is raised so the share creation may be audited. This rule only checks for changed permissions. This is to prevent repeated alerts if, for example, a comment is changed, but the permissions have not been altered.
+
 
 
 ## Permission required to execute the technique
 Administrator
 
-## Detection description
+
+## Description of the attack
 Sensitive data is often found on overly permissive shares. This can lead to an easy escalation path which is hard to track down. By monitoring permissions for new and updated shares, such overly permissive shares can be detected.
 
 

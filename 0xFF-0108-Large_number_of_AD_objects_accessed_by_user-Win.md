@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|SecurityEvents|4662||Active Directory|Active Directory Object Access|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|SecurityEvents|SecurityEvent|4662||Active Directory|Active Directory Object Access|
 ---
 
-## Technical description of the attack
+## Detection description
 This query detects a user accessing a large number of Group and User objects from Active Directory which is outside the baseline of normal behavior for that particular user.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers often abuse information from Active Directory, such as lists of domain users and groups, in order to determine attack paths. When large numbers of objects are accessed, this
 could indicate usage of an AD collection tool such as Bloodhound.
 
@@ -44,7 +44,11 @@ There are legitimate use-cases for downloading large number of AD objects. For e
 
 
 ## Suggested Response Actions
-Investigate if the user has a legitimate business purpose for accessing large numbers of Active Directory objects.
+Verify whether legitimate business or operational reasons exist for the user account to access large volumes of Active Directory objects.
+
+In case of a suspected breach or insider threat:
+ * Review the latest activities performed by the account on the AD objects and validate the permissions of the compromised account.
+ * If malicious activity is verified, consider disabling the suspicious user account and isolating the host if interactive access is suspected.
 
 
 ## Detection Blind Spots
@@ -52,7 +56,8 @@ If the attack is performed slowly, for example, with 5000 objects per day it can
 
 
 ## References
-* http://www.stuffithoughtiknew.com/2019/02/detecting-bloodhound.html
+* https://falconforce.nl/falconfriday-detecting-active-directory-data-collection-0xff21/
+* https://medium.com/securonix-tech-blog/detecting-ldap-enumeration-and-bloodhound-s-sharphound-collector-using-active-directory-decoys-dfc840f2f644
 
 ---
 ## Detection
@@ -95,6 +100,7 @@ ADObjectAccess
 | extend SuspiciousThreshold=max_of(PreviousMaxObjectPerDay*suspicious_factor,min_suspicious_count)
 | where ObjectCount > SuspiciousThreshold
 | project TimeGenerated, Account, ObjectCount, PreviousMaxObjectPerDay, SuspiciousThreshold
+| extend AccountName=iif(Account contains @"\",tostring(split(Account,@"\")[1]),Account),AccountDomain=iif(Account contains @"\",tostring(split(Account,@"\")[0]),"")
 // Begin environment-specific filter.
 // End environment-specific filter.
 // Begin de-duplication logic.
@@ -121,6 +127,8 @@ ADObjectAccess
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.5  | 2025-05-20| minor | Enhanced response plan actions. |
+| 1.4  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.3  | 2024-01-18| minor | Added query_prefix variable. |
 | 1.2  | 2022-08-26| minor | Entity mapping added. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |

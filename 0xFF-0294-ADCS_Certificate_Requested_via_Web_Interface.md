@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -17,19 +15,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AzureMonitor(IIS)|W3CIISLog||Application Log|Application Log Content|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AzureMonitor(IIS)|W3CIISLog|W3CIISLog||Application Log|Application Log Content|
 ---
 
-## Technical description of the attack
+## Detection description
 This query uses IIS logs to identify certificates requested via the web interface. In the first step, ADCS servers are listed by looking for an ADCS specific Uri Stem in the IIS logs events. A hard-coded ADCS server list can also be provided as environment variable instead (adcs_server_list). In a second step, requests to these servers done via the web interface are identified by looking for POST to a '/certsrv/certfnsh.asp' Uri.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 This query looks for ADCS certificates being requested via the web interface. This technique can be used by an attacker to modify authentication processes, in order to evade detection or elevate privileges.
 
 
@@ -72,6 +72,7 @@ W3CIISLog
 | where Computer in~ (ADCSsrv)
 | where not(csMethod in~ ("GET","HEAD"))
 | where csUriStem =~ "/certsrv/certfnsh.asp"
+| extend HostName=tostring(split(Computer,".")[0]),DnsDomain=iif(Computer contains ".", substring(Computer, indexof(Computer, ".") + 1, strlen(Computer)),"")
 // Begin environment-specific filter.
 // End environment-specific filter.
 // Begin de-duplication logic.
@@ -98,5 +99,6 @@ W3CIISLog
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.2  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.1  | 2022-07-06| minor | Modified query to use ingestion_time() instead of TimeGenerated. |
 | 1.0  | 2022-06-08| major | Initial version. |

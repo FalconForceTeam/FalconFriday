@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -19,19 +17,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Command|Command Execution|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Command|Command Execution|
 ---
 
-## Technical description of the attack
+## Detection description
 This query detects when `BrowserCore.exe` is accessed by a suspicious process. The `BrowserCore.exe` binary is responsible for allowing browser add-ons to use Single Sign On via Azure AD. This rule detects when an uncommon process interacts with the `BrowserCore.exe` process.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 When a browser wants to use Single Sign On to AzureAD, it can start the `BrowserCore.exe` process and interact with it via `stdin` and `stdout`. Chrome typically does this through named pipes.
 
 

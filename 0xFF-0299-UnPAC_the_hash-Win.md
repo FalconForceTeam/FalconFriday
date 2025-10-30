@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|SecurityEvents|4769||Active Directory|Active Directory Credential Request|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|SecurityEvents|SecurityEvent|4769||Active Directory|Active Directory Credential Request|
 ---
 
-## Technical description of the attack
+## Detection description
 This query looks for an attack that allows an attacker with a valid TGT token for a certain account, to obtain the NTLM hash for that account. Such an account may either be a user account or a machine account. The TGT can, for example, be obtained by authenticating with a certificate instead of with username and password.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 This query works by identifying TGS requests with KDC options that don't occur in normal AD environments. This detection looks for TGS requests where the KDC options `Renewable`, `Forwardable`, `Renewable_ok` and `Enc_tkt_in_skey` are set. This combination of options is unique for Certipy, Rubeus and Kekeo. More tools inspired by the implementation of these tools likely use the same options. The detection checks the presense of these 4 options, regardless which other options are set.
 
 
@@ -81,9 +81,11 @@ SecurityEvent
 | where EventID == 4769
 | extend ticketOptions = toint(extract("<Data Name=\"TicketOptions\">(.*?)</Data>", 1, EventData))
 | extend TargetUserName = extract("<Data Name=\"TargetUserName\">(.*?)@.*?</Data>", 1, EventData)
+| extend TargetDomainName = extract("<Data Name=\"TargetDomainName\">(.*?)</Data>", 1, EventData)
 | extend ServiceName = extract("<Data Name=\"ServiceName\">(.*?)</Data>", 1, EventData)
 | where ServiceName =~ TargetUserName // Requirement for getting the NT hash with U2U. This makes the KDC encrypt the NT hash with the key in the TGT.
 | where binary_and(ticketOptions, krbflags) == krbflags
+| extend HostName=tostring(split(Computer,".")[0]),DnsDomain=iif(Computer contains ".", substring(Computer, indexof(Computer, ".") + 1, strlen(Computer)),"")
 // Begin environment-specific filter.
 // End environment-specific filter.
 // Begin de-duplication logic.
@@ -110,4 +112,5 @@ SecurityEvent
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.1  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.0  | 2022-06-17| major | Initial version. |

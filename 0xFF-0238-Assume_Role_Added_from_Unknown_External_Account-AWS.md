@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -17,20 +15,22 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AWS|CreateRole||User Account|User Account Modification|
-|AWS|UpdateAssumeRolePolicy||User Account|User Account Modification|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AWS|AWSCloudTrail|CreateRole||User Account|User Account Modification|
+|AWS|AWSCloudTrail|UpdateAssumeRolePolicy||User Account|User Account Modification|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for roles being created or updated where `sts:AssumeRole` is granted with an external AWS account. If the external AWS account id is not in a list of known accounts an alert is raised.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 When an attacker gains access to an account with access to AWS, they might abuse that account to grant the 'AssumeRole' privilege to an external AWS account. Once this privilege is assigned, the external account can be used to access the role and perform actions in the compromised AWS account.
 
 
@@ -47,7 +47,7 @@ Confirm if the user responsible for the providing external access to the role ha
 
 
 ## Detection Blind Spots
-None known.
+None expected.
 
 
 ## References

@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer, WindowsEndpoint
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -17,19 +15,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Process|Process Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for the original file name of a set of binaries that is known to be used by attackers. The OriginalFileName field is then matched to the actual file name. Where there isn't a match the results are returned, indicating the file has been renamed. The original file name field is derived from the PE header of the executable, which is the name of the binary during compilation.
+
 
 
 ## Permission required to execute the technique
 Administrator
 
-## Detection description
+
+## Description of the attack
 Attackers may rename legitimate system utilities trying to evade security mechanisms concerning the usage of those utilities.
 
 

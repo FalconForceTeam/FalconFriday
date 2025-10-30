@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -17,19 +15,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ImageLoaded||Module|Module Load|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceImageLoadEvents|ImageLoaded||Module|Module Load|
 ---
 
-## Technical description of the attack
+## Detection description
 This query detects the use of PowerShell through "system.management.automation.dll" which is invoked by a process with a low global prevalence (i.e., fairly unique binary).
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers often use PowerShell to execute malicious payloads. The usage of PowerShell can be obfuscated by not using powershell.exe directly, but instead using the "system.management.automation.dll" which implements the PowerShell run-time. When this alert triggers it might indicate a user is using PowerShell while attempting to hide from detection.
 
 
@@ -38,7 +38,7 @@ None.
 
 
 ## False Positives
-Many legitimate programs will use the "system.management.automation.dll". This might lead to false positives that require filtering.
+Many legitimate programs will use the "system.management.automation.dll". This might lead to false-positives that require filtering.
 
 
 ## Suggested Response Actions
@@ -70,8 +70,8 @@ DeviceImageLoadEvents
 | extend InitiatingProcessSHA1=tolower(InitiatingProcessSHA1)
 | invoke FileProfile(InitiatingProcessSHA1, 1000)
 | where not(ProfileAvailability =~ "Error")
-| where not(IsRootSignerMicrosoft) and not(isempty(IsCertificateValid))
-| where (IsCertificateValid and coalesce(GlobalPrevalence,default_global_prevalence) < 200) or (not(IsCertificateValid) and coalesce(GlobalPrevalence,default_global_prevalence) < 500));
+| where coalesce(IsRootSignerMicrosoft, false) == false or  coalesce(IsCertificateValid, false) == false
+| where (IsCertificateValid and coalesce(GlobalPrevalence,default_global_prevalence) < 200) or (not(coalesce(IsCertificateValid, false)) and coalesce(GlobalPrevalence,default_global_prevalence) < 500));
 DeviceImageLoadEvents
 | where ingestion_time() >= ago(timeframe)
 // FileProfile is case-sensitive and works on lower-case hashes.
@@ -87,6 +87,7 @@ DeviceImageLoadEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.5  | 2025-06-13| minor | Used coalesce on IsCertificateValid to include un-populated entries. |
 | 1.4  | 2024-06-28| minor | Modified the usage of FileProfile to exclude results if the call to the FileProfile API has failed. |
 | 1.3  | 2023-01-03| minor | Lowered the case of hashes that are fed to the FileProfile function due to case sensitivity. |
 | 1.2  | 2022-11-01| minor | Use default_global_prevalence variable to allow customizing handling of empty GlobalPrevalence |

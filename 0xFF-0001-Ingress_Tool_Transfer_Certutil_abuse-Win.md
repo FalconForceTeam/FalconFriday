@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -17,24 +15,26 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Command|Command Execution|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Command|Command Execution|
 ---
 
-## Technical description of the attack
-This query searches for invocations of certutil, including renamed versions with specific command line parameters that indicate using certutil as a tool to download files.
+## Detection description
+This query searches for invocations of certutil, including renamed versions with specific command-line parameters that indicate using certutil as a tool to download files.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Certutil is a very commonly abused tool to download or execute malware.
 
 
 ## Considerations
-N/A.
+None.
 
 
 ## False Positives
@@ -46,7 +46,7 @@ Contact the user to verify if certutil usage was legitimate, or - if not - may h
 
 
 ## Detection Blind Spots
-An attacker might be able to further obfuscate the command line parameters of certutil to avoid detection.
+An attacker might be able to further obfuscate the command-line parameters of certutil to avoid detection.
 
 
 ## References

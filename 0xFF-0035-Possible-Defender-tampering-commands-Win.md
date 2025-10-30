@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -17,19 +15,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Command|Command Execution|
-|MicrosoftThreatProtection|PowerShellCommand||Script|Script Execution|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Command|Command Execution|
+|MicrosoftThreatProtection|DeviceEvents|PowerShellCommand||Script|Script Execution|
 ---
 
-## Technical description of the attack
+## Detection description
 This query combines known process commandlines with DeviceEvents with a specific PowerShell command.
+
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Based on FalconForce research on malware behavior, this query looks for the most prevalent commands in malware infections that attempt to bypass Defender or disable it. The commands included in this detection are most frequently used functions in a malware set of over 200.000 samples.
 
 
@@ -42,7 +42,12 @@ In some cases, for example, installing a different anti-virus product might rais
 
 
 ## Suggested Response Actions
-Review the InitiatingProcess and ProcessCommandLine for suspicious paths. Validate with the user whether the action was deliberate.
+Verify whether legitimate business or operational reasons exist for the user account to change or disable the logging configuration.
+
+In case of a suspected breach or insider threat:
+* Review the latest activities performed by the account that initiated the command execution and validate the permissions of the compromised account.
+* Check the command executed, available in the `ProcessCommandLine` field of the query output, to determine if this is a known malicious command.
+* If the modifications of Defender configuration is deemed suspicious, ensure to restore your visibility to prior levels.
 
 
 ## Detection Blind Spots
@@ -87,8 +92,10 @@ union processes,powershell
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.6  | 2025-05-19| minor | Enhanced response plan actions. |
+| 1.5  | 2025-04-24| minor | Added Sentinel entities. |
 | 1.4  | 2024-06-06| minor | Added a filter for "ProcessCreated" actiontype, as MDE is rolling out other actiontypes as well. |
 | 1.3  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |
 | 1.2  | 2021-03-12| minor | Updated query to be more resilient. |
-| 1.1  | 2021-03-11| major | Reworked query a bit and added filters. |
+| 1.1  | 2021-03-11| minor | Reworked query a bit and added filters. |
 | 1.0  | 2021-02-20| major | Initial version. |

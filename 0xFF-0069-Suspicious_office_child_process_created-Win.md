@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -17,21 +15,23 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|FileCreated||File|File Creation|
-|MicrosoftThreatProtection|ConnectionSuccess||Network Traffic|Network Connection Creation|
-|MicrosoftThreatProtection|ProcessCreated||Process|Process Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceFileEvents|FileCreated||File|File Creation|
+|MicrosoftThreatProtection|DeviceNetworkEvents|ConnectionSuccess||Network Traffic|Network Connection Creation|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query obtains a list of downloaded Office documents (doc, xls, etc.) by looking at files written by commonly used web browsers. It then searches for invocations of an Office program by double-clicking on these files. If these processes spawn an uncommon child process this is reported as suspicious.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 An Office file which was downloaded, has spawned a child process. This could be behavior often seen from attackers.
 
 
@@ -63,7 +63,7 @@ If the user opens the file in another way than double clicking it, for example, 
 **Query:**
 ```C#
 let timeframe = 2*1d;
-let browsers = dynamic(["iexplore.exe", "chrome.exe", "firefox.exe", "msedge.exe"]);
+let browsers = dynamic(["iexplore.exe", "chrome.exe", "firefox.exe", "msedge.exe", "msedgewebview2.exe"]);
 let ext = dynamic([".docm", ".xlsm", ".xls", ".doc", ".pptm", ".ppt"]);
 let officeApps = dynamic(["winword.exe", "excel.exe", "powerpnt.exe"]);
 let whitelist = dynamic(["MSOSYNC.exe", "splwow64.exe", "csc.exe", "outlook.exe", "AcroRd32.exe", "Acrobat.exe", "explorer.exe", "DW20.exe",
@@ -144,6 +144,7 @@ DeviceProcessEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.4  | 2024-11-25| minor | Added msmsedgewebview2 to the list of browsers. |
 | 1.3  | 2024-06-06| minor | Added a filter for "ProcessCreated" actiontype, as MDE is rolling out other actiontypes as well. |
 | 1.2  | 2023-01-03| minor | Lowered the case of hashes that are fed to the FileProfile function due to case sensitivity. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |

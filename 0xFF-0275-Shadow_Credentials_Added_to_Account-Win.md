@@ -5,32 +5,32 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
 
 | Tactic | Technique | Subtechnique | Technique Name |
 |---|---|---| --- |
-| TA0004 - Privilege Escalation | T1484 |  | Domain Policy Modification|
+| TA0004 - Privilege Escalation | T1484 |  | Domain or Tenant Policy Modification|
 | TA0003 - Persistence | T1098 |  | Account Manipulation|
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|SecurityEvents|5136||Active Directory|Active Directory Object Modification|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|SecurityEvents|SecurityEvent|5136||Active Directory|Active Directory Object Modification|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for modifications to the 'msDS-KeyCredentialLink' property in Active Directory, introduced in Windows Server 2016. There are two different events which contain information to detect such changes 5136 and 4662. This detection uses the 5136, which is the preferred event to use.
+
 
 
 ## Permission required to execute the technique
 Administrator
 
-## Detection description
+
+## Description of the attack
 Windows Hello for Business (WHfB) supports multi-factor passwordless authentication. When the user or computer enrolls, the TPM generates a public-private key pair for the relevant account. The public key is stored in a new Key Credential object in the msDS-KeyCredentialLink attribute of the account. When a client logs in, Windows attempts to perform PKINIT authentication using their private key. Under the Key Trust model, the Domain Controller can decrypt their pre-authentication data using the raw public key in the corresponding NGC object stored in the client's msDS-KeyCredentialLink attribute. Attackers can abuse this property to gain local administrator access to a computer. Various attack tools such as Whisker, DSInternals and ntlmrelayx include functionality to modify this property.
 
 
@@ -84,6 +84,8 @@ SecurityEvent
 | extend SubjectUserName = extract("<Data Name=\"SubjectUserName\">(.*?)</Data>", 1, EventData)
 | where AttributeName has "msDS-KeyCredentialLink"
 | where not(SubjectUserName endswith "$" and ObjectDN startswith strcat("CN=", replace_string(SubjectUserName, "$", ""), ",")) // Machine account changing its own msDS-KeyCredentialLink.
+| extend HostName=tostring(split(Computer,".")[0]),DnsDomain=iif(Computer contains ".", substring(Computer, indexof(Computer, ".") + 1, strlen(Computer)),"")
+| extend AccountName=iif(Account contains @"\",tostring(split(Account,@"\")[1]),Account),AccountDomain=iif(Account contains @"\",tostring(split(Account,@"\")[0]),"")
 // Begin environment-specific filter.
 // End environment-specific filter.
 // Begin de-duplication logic.
@@ -110,6 +112,7 @@ SecurityEvent
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.5  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.4  | 2023-04-20| minor | Fixed blindspot introduced due to performance update. |
 | 1.3  | 2023-03-27| minor | Performance update. |
 | 1.2  | 2023-01-30| minor | Added more details to the response plan. |

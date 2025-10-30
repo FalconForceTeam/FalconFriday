@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -21,19 +19,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ClrUnbackedModuleLoaded||Module|Module Load|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceEvents|ClrUnbackedModuleLoaded||Module|Module Load|
 ---
 
-## Technical description of the attack
+## Detection description
 The query searches for script interpreters (mmc.exe, mshta.exe, wscript.exe, and cscript.exe) loading .NET assemblies from memory. In the case of the MMC executable, the query also checks for the MSC file that was loaded, as some legitimate MSC files are known to load .NET assemblies via MMC.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Multiple offensive tools exist that allow an attacker to convert a .NET assembly to a script that can be executed by script interpreters. This allows attackers to bypass security controls by executing malicious code without writing it to disk. This technique can be used for initial access by embedding the malicious script in a `.msc` or `.hta` file. These files can contain embedded scripts and are executed when the user opens the file.
 
 

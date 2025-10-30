@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -17,19 +15,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AWS|GetPasswordData||Application Log|Application Log Content|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AWS|AWSCloudTrail|GetPasswordData||Application Log|Application Log Content|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for an account which accesses a large number of secrets from various sources in AWS, including SSM secrets and instance passwords.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 When an attacker gains access to an account with access to AWS,they might abuse that account to view secrets stored in the AWS cloud.
 
 
@@ -46,7 +46,7 @@ Confirm if the user responsible for the account that triggered this alert is awa
 
 
 ## Detection Blind Spots
-None known.
+None expected.
 
 
 ## References

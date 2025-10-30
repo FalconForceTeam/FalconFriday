@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -17,21 +15,23 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|LogonSuccess||Logon Session|Logon Session Creation|
-|MicrosoftThreatProtection|LogonSuccess||Logon Session|Logon Session Creation|
-|MicrosoftThreatProtection|||||
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|IdentityLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
+|MicrosoftThreatProtection|DeviceLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
+|MicrosoftThreatProtection|DeviceNetworkEvents|||||
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for failed logins from a single source towards multiple different accounts.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 A password spraying attack is detected, where a single machine has performed a large number of failed login attempts, with a large number of different accounts. For each account, the attacker uses just a few attempts to prevent account lockout.
 
 
@@ -48,7 +48,7 @@ Investigate why the machine has performed so many failed login attempts with so 
 
 
 ## Detection Blind Spots
-None.
+None expected.
 
 
 ## References

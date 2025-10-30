@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer, WindowsEndpoint
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -20,20 +18,22 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Process|Process Creation|
-|MicrosoftThreatProtection|ConnectionSuccess||Network Traffic|Network Connection Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
+|MicrosoftThreatProtection|DeviceNetworkEvents|ConnectionSuccess||Network Traffic|Network Connection Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query matches incoming connections to services.exe with child processes spawned by services.exe, when a new child process is spawned directly after an incoming connection. This indicates a potential lateral movement where an incoming connection to services.exe triggered a child process being spawned.
+
 
 
 ## Permission required to execute the technique
 Administrator
 
-## Detection description
+
+## Description of the attack
 Attackers might use Windows APIs to communicate with the Windows Service Control Manager (SCM) remotely
 and use it for lateral movement by spawning processes from SCM.
 

@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -17,25 +15,27 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Command|Command Execution|
-|MicrosoftThreatProtection|LogonSuccess||Logon Session|Logon Session Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Command|Command Execution|
+|MicrosoftThreatProtection|DeviceLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for child processes created by taskmgr, where taskmgr was not invoked interactively using /1,/2/,3 or /4.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 SharpRDP is an attack tool that allows attackers to perform remote command execution through RDP without the need to have real-time manual interaction by simulating keystrokes on the target system. This allows an attacker to (asynchronously) run the binary on an already compromised system, which in turn will connect to the target system and execute a set of keystrokes.
 
 
 ## Considerations
-N/A.
+None.
 
 
 ## False Positives

@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -17,20 +15,22 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AzureActiveDirectory|Sign-in activity||Logon Session|Logon Session Metadata|
-|AzureActiveDirectory|Sign-in activity||Logon Session|Logon Session Metadata|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AzureActiveDirectory|SigninLogs|Sign-in activity||Logon Session|Logon Session Metadata|
+|AzureActiveDirectory|AADNonInteractiveUserSignInLogs|Sign-in activity||Logon Session|Logon Session Metadata|
 ---
 
-## Technical description of the attack
+## Detection description
 This query establishes a baseline of the type of UserAgent (i.e., browser, Office application, etc.) that is typically used for a particular application by looking back for a number of days. It then searches the current day for any deviations from this pattern, i.e., types of UserAgents not seen before in combination with this application.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 An attacker might be able to steal an access token for a particular application and use that to connect on behalf of the user.
 
 
@@ -63,7 +63,7 @@ If the attacker fully mimics the UserAgent of the actual application this rule w
 ```C#
 let timeframe = 2*1d;
 let RuleId = "0060";
-let DedupFields = dynamic(["TimeGenerated"]);
+let DedupFields = dynamic(["UserPrincipalName", "UserAgent"]);
 let lookback_timeframe= 7d;
 let ExtractBrowserTypeFromUA=(ua:string) {
     // Note these are in a specific order since, for example, Edge contains based Chrome/ and Edge/ strings.
@@ -101,7 +101,7 @@ let ExtractBrowserTypeFromUA=(ua:string) {
         ua contains "PHP/", dynamic({"AgentType": "Custom", "AgentName": "PHP"}),
         ua startswith "curl/", dynamic({"AgentType": "Custom", "AgentName": "curl"}),
         ua contains "python-requests", dynamic({"AgentType": "Custom", "AgentName": "Python"}),
-        pack("AgentType","Other","AgentName", extract(@"^([^/]*)/",1,ua))
+        bag_pack("AgentType","Other","AgentName", extract(@"^([^/]*)/",1,ua))
     )
 };
 // Query to obtain 'simplified' user agents in a given timespan.
@@ -162,6 +162,8 @@ QueryUserAgents(timeframe, 0d)
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 2.0  | 2025-08-12| major | Updated query to use the bag_pack() function instead of the deprecated pack(). |
+| 1.4  | 2025-05-23| minor | Updated dedup_fields to match the query output columns. |
 | 1.3  | 2023-06-23| minor | Updated check for MSAL User-Agent to remove false-positives. |
 | 1.2  | 2022-08-26| minor | Entity mapping added. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |

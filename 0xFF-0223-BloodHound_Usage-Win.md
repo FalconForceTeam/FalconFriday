@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|LDAP query||Active Directory|Active Directory Object Access|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|IdentityQueryEvents|LDAP query||Active Directory|Active Directory Object Access|
 ---
 
-## Technical description of the attack
+## Detection description
 This rule detects usage of LDAP information gathering tools such as BloodHound, SharpHound or potential custom tools mimicking the behavior of the legitimate tool ADExplorer from Sysinternals. The rule detects tool-specific LDAP queries and also contains a custom "Signature" field, providing information about the exact tool that most probably created the detected LDAP query.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Adversaries use LDAP information gathering tools such as BloodHound / SharpHound to massively collect information about the target Active Directory environment and easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Legitimate tools such as ADExplorer can also be used to extract similar information. Adversaries could potentially develop custom tools that mimics the behavior of ADExplorer in order to remain undetected by defensive controls.
 
 
@@ -93,5 +93,6 @@ SharphoundCheck | union ADExplorerMimickCheck, BloodhoundCheck
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.2  | 2025-05-23| minor | Added alternate dedup_fields for Sentinel deployment. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |
 | 1.0  | 2022-01-04| major | Initial version. |

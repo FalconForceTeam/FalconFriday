@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,25 +16,27 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|QueueUserApcRemoteApiCall||Process|OS API Execution|
-|MicrosoftThreatProtection|CreateRemoteThreadApiCall||Process|OS API Execution|
-|MicrosoftThreatProtection|NtMapViewOfSectionRemoteApiCall||Process|OS API Execution|
-|MicrosoftThreatProtection|MemoryRemoteProtect||Process|Process Access|
-|MicrosoftThreatProtection|NtAllocateVirtualMemoryRemoteApiCall||Process|Process Access|
-|MicrosoftThreatProtection|ReadProcessMemoryApiCall||Process|Process Access|
-|MicrosoftThreatProtection|SetThreadContextRemoteApiCall||Process|Process Access|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceEvents|QueueUserApcRemoteApiCall||Process|OS API Execution|
+|MicrosoftThreatProtection|DeviceEvents|CreateRemoteThreadApiCall||Process|OS API Execution|
+|MicrosoftThreatProtection|DeviceEvents|NtMapViewOfSectionRemoteApiCall||Process|OS API Execution|
+|MicrosoftThreatProtection|DeviceEvents|MemoryRemoteProtect||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|NtAllocateVirtualMemoryRemoteApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|ReadProcessMemoryApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|SetThreadContextRemoteApiCall||Process|Process Access|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for suspicious behavior initiated by MMC. This is done by looking at a number of actions that are commonly associated with process injection.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers are known to use malicious MSC files to deliver payloads to victims. MSC files are Microsoft Management Console (MMC) files that can be used to run administrative tools. Attackers can use MSC files to deliver malicious payloads to victims by tricking them into opening the file. Since a user is likely to close the MMC console after opening the file, attackers may use process injection to ensure that the malicious code continues to run in the background.
 
 

@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Process|Process Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query looks for potential abuse of the SQL Server stored procedure `xp_cmdshell` which allows command execution on the OS. Running `xp_cmdshell` on the system triggers the follow process chain: `sqlservr.exe` => `xp_cmdshell 'whoami'` => `"cmd.exe /c" whoami` => `whoami.exe`. This rule tries to identify running of suspicious commands as a grandchild of `sqlservr.exe`. The rule is based on a block-list of executables of LOLBINs and other known recon commands or any executable executed with a low prevalence.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers who obtain access to a SQL server often use this access to escape from SQL Server to the OS by abusing the `xp_cmdshell` stored procedure. This stored procedure executes commands on the OS.
 
 
@@ -67,18 +67,26 @@ let lolbins = dynamic(["at.exe", "atbroker.exe", "bash.exe", "bitsadmin.exe", "c
 let binaries_of_interest = dynamic(["net.exe", "net1.exe", "whoami.exe", "ipconfig.exe", "tasklist.exe", "quser.exe", "tracert.exe", "route.exe", "runas.exe", "klist.exe", "wevtutil.exe", "wmiprvse.exe", "powershell.exe", "bash.exe", "qwinsta.exe", "rwinsta.exe", "replace.exe", "findstr.exe", "icacls.exe", "cacls.exe", "xcopy.exe", "robocopy.exe", "takeown.exe", "vssadmin.exe", "nltest.exe", "nltestk.exe", "sctasks.exe", "nbtstat.exe", "nbtinfo.exe", "mofcomp.exe", "nltestrk.exe", "dnscmd.exe", "registercimprovider.exe", "registercimprovider2.exe", "procdump", "ru.exe", "pspasswd.exe", "psexec.c", "psexec.exe", "pslist.exe", "regsize", "pskill.exe", "pkill.exe", "wsmprovhost.exe", "fltmc.exe", "sdbinst.exe"]);
 // Merge both lists into one reference list.
 let original_file_name_set=array_concat(lolbins,binaries_of_interest);
-let allGrandChilderen = DeviceProcessEvents // Based on some unscientific testing, this is faster than using materialize() in this case.
-| where ingestion_time() >= ago(timeframe)
-| where ActionType =~ "ProcessCreated"
-| where InitiatingProcessParentFileName =~ "sqlservr.exe"
-| where InitiatingProcessCommandLine startswith "\"cmd.exe\" /c";
-let allSuspiciousHashes = allGrandChilderen
-// FileProfile is case-sensitive and works on lower-case hashes.
-| extend SHA1=tolower(SHA1)
-| distinct SHA1
-| invoke FileProfile(SHA1, 1000)
-| where not(ProfileAvailability =~ "Error")
-| where coalesce(GlobalPrevalence,default_global_prevalence) < 250 or not(isempty(ThreatName));
+let allGrandChilderen = materialize(
+  DeviceProcessEvents
+  | where ingestion_time() >= ago(timeframe)
+  | where ActionType =~ "ProcessCreated"
+  | where InitiatingProcessParentFileName =~ "sqlservr.exe"
+  | where InitiatingProcessCommandLine startswith "\"cmd.exe\" /c"
+);
+let allSuspiciousHashes = (
+  // The reason for looking at grand children of SQL Server instead of children is that xp_cmdshell always runs a command
+  // via cmd.exe /c so the child process will always be cmd.exe. We are interested in the grand child process which is the actual command.
+  allGrandChilderen
+  // FileProfile is case-sensitive and works on lower-case hashes.
+  | where not(isempty(SHA1))
+  | summarize DeviceCount=dcount(DeviceId) by SHA1
+  | top 1000 by DeviceCount asc
+  | invoke FileProfile(SHA1, 1000)
+  | where not(ProfileAvailability =~ "Error")
+  | where coalesce(GlobalPrevalence,default_global_prevalence) < 250
+  | where SignatureState != "SignedValid"
+);
 allGrandChilderen
 | where FileName in~ (original_file_name_set) or SHA1 in ((allSuspiciousHashes))
 | join kind=leftouter allSuspiciousHashes on SHA1
@@ -91,6 +99,7 @@ allGrandChilderen
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 2.0  | 2025-01-16| major | Improved the FileProfile logic when dealing with over 1000 distinct hashes. |
 | 1.6  | 2024-06-28| minor | Modified the usage of FileProfile to exclude results if the call to the FileProfile API has failed. |
 | 1.5  | 2024-06-06| minor | Added a filter for "ProcessCreated" actiontype, as MDE is rolling out other actiontypes as well. |
 | 1.4  | 2023-01-03| minor | Lowered the case of hashes that are fed to the FileProfile function due to case sensitivity. |

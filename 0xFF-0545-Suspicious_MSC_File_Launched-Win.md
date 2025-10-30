@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,21 +16,23 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Process|Process Creation|
-|MicrosoftThreatProtection|FileCreated||File|File Creation|
-|MicrosoftThreatProtection|FileRenamed||File|File Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
+|MicrosoftThreatProtection|DeviceFileEvents|FileCreated||File|File Creation|
+|MicrosoftThreatProtection|DeviceFileEvents|FileRenamed||File|File Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 The query searches for suspicious MSC files that are launched on the system. The following types of suspicious files are detected: MSC files downloaded by web browsers, MSC files in the Downloads folder, MSC files extracted from ZIP files, and MSC files with Mark Of The Web (MOTW).
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers are known to use malicious MSC files to deliver payloads to victims. MSC files are Microsoft Management Console (MMC) files that can be used to run administrative tools. Attackers can use MSC files to deliver malicious payloads to victims by tricking them into opening the file. This use-case aims to detect suspicious MSC files that are launched on the system.
 
 

@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|FileCreated||File|File Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceFileEvents|FileCreated||File|File Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 There is an ASR rule that detects whenever an Office application writes an executable file to disk. There is a documented bypass for this rule, which allows an attacker to write the file to disk with a benign extension (e.g., .txt or .tmp) and rename the file afterwards. This query tries to detect such behavior.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 The ASR rule `Block Office applications from creating executable content` with GUID `3B576869-A4EC-4529-8536-B80A7769E899` is meant to prevent Office applications from dropping potentially malicious files on disk. Dropping a file on disk might in certain conditions be enough to get it executed.
 
 
@@ -104,4 +104,4 @@ DeviceFileEvents
 | 1.3  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |
 | 1.2  | 2021-09-09| minor | Removed binary formats from the extension list as these are detected by ASR anyway and result in unnecessary false positives. |
 | 1.1  | 2021-08-24| minor | Update MITRE tags. |
-| 1.0  | 2021-04-07| minor | Initial version. |
+| 1.0  | 2021-04-07| major | Initial version. |

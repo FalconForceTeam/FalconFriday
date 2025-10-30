@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer, WindowsEndpoint
 
-**FP Rate:** High
-
 ---
 
 ## ATT&CK Tags
@@ -19,19 +17,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Command|Command Execution|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Command|Command Execution|
 ---
 
-## Technical description of the attack
+## Detection description
 This query identifies binaries that run as a scheduled task, by looking at the parent process command line. Of the identified binaries running as scheduled tasks it finds suspicious binaries by looking at the file signature and global prevalence.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers can use scheduled tasks as a method for persistence.
 
 

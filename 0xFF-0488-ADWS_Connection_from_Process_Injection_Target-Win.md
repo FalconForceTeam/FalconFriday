@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -19,26 +17,28 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ConnectionSuccess||Network Traffic|Network Connection Creation|
-|MicrosoftThreatProtection|CreateRemoteThreadApiCall||Process|Process Access|
-|MicrosoftThreatProtection|MemoryRemoteProtect||Process|Process Access|
-|MicrosoftThreatProtection|NtAllocateVirtualMemoryApiCall||Process|Process Access|
-|MicrosoftThreatProtection|NtAllocateVirtualMemoryRemoteApiCall||Process|Process Access|
-|MicrosoftThreatProtection|NtMapViewOfSectionRemoteApiCall||Process|Process Access|
-|MicrosoftThreatProtection|SetThreadContextRemoteApiCall||Process|Process Access|
-|MicrosoftThreatProtection|QueueUserApcRemoteApiCall||Process|Process Access|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceNetworkEvents|ConnectionSuccess||Network Traffic|Network Connection Creation|
+|MicrosoftThreatProtection|DeviceEvents|CreateRemoteThreadApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|MemoryRemoteProtect||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|NtAllocateVirtualMemoryApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|NtAllocateVirtualMemoryRemoteApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|NtMapViewOfSectionRemoteApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|SetThreadContextRemoteApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|QueueUserApcRemoteApiCall||Process|Process Access|
 ---
 
-## Technical description of the attack
+## Detection description
 The query first collects all network connections to the Active Directory Web Services (ADWS) service. It then searches for processes that inject into a process that makes a connection to ADWS. This can be used to detect process injection into a process that is used to query Active Directory.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 ADWS is a Windows service that allows Active Directory to be queried via a web service. While this service is not
 malicious by itself, it can be used by attackers to query Active Directory from compromised machines. An attacker
 might inject code into a legitimate process and use that process to connect to ADWS.
@@ -108,6 +108,7 @@ let InjectorProcesses=materialize(
 ADWSConnections
 | lookup kind=inner InjectorProcesses on DeviceId, $left.InitiatingProcessId == $right.ProcessId, $left.InitiatingProcessFileName == $right.FileName
 | summarize arg_min(Timestamp,*), InjectionMethods=make_set(InjectorActionType) by DeviceId, DeviceName, InitiatingProcessId, InitiatingProcessFileName
+| extend HostName=tostring(split(DeviceName,".")[0]),DnsDomain=iif(DeviceName contains ".", substring(DeviceName, indexof(DeviceName, ".") + 1, strlen(DeviceName)),"")
 // Begin environment-specific filter.
 // End environment-specific filter.
 ```
@@ -117,4 +118,6 @@ ADWSConnections
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.2  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
+| 1.1  | 2023-12-18| minor | Added Sentinel entity mapping. |
 | 1.0  | 2023-11-27| major | Initial version. |

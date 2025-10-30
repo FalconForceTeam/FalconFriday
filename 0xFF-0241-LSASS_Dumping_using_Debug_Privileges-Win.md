@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|OpenProcessApiCall||Process|Process Access|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceEvents|OpenProcessApiCall||Process|Process Access|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for a process that requests the `SeDebugPrivilege` privilege and opens LSASS memory using specific permission 0x1fffff which represents `PROCESS_ALL_ACCESS`.
+
 
 
 ## Permission required to execute the technique
 Administrator
 
-## Detection description
+
+## Description of the attack
 Attackers can extract credentials from LSASS memory by performing a memory dump of the LSASS process. Many methods of dumping LSASS memory require the `SeDebugPrivilege` privilege and use the `WriteMiniDump` function which opens the targeted process using `PROCESS_ALL_ACCESS` permissions.
 
 
@@ -80,7 +80,7 @@ DeviceEvents
 | where isnotempty(InitiatingProcessSHA1)
 // Look for processes that request debug privilege that also opened LSASS
 | where InitiatingProcessSHA1 in ((LSASSOpen | project InitiatingProcessSHA1)) // Speeds up the query.
-| join kind=inner LSASSOpen on DeviceId, InitiatingProcessSHA1, InitiatingProcessId
+| lookup kind=inner LSASSOpen on DeviceId, InitiatingProcessSHA1, InitiatingProcessId
 // Check that debug privilege is enabled.
 | extend AdditionalFields=parse_json(AdditionalFields)
 | extend CurrentTokenPrivEnabled = toint(AdditionalFields.CurrentTokenPrivEnabled)
@@ -93,6 +93,7 @@ DeviceEvents
 | where not(DebugPrivOrig) and DebugPrivCurrent
 | extend CleanCmdLine = parse_command_line(InitiatingProcessCommandLine, "windows")
 | where not(InitiatingProcessFileName =~ "tasklist.exe" and CleanCmdLine has_any ("/m", "-m"))
+| extend HostName=tostring(split(DeviceName,".")[0]),DnsDomain=iif(DeviceName contains ".", substring(DeviceName, indexof(DeviceName, ".") + 1, strlen(DeviceName)),"")
 | project-reorder Timestamp, DeviceId, InitiatingProcessFileName
 // Begin environment-specific filter.
 // End environment-specific filter.
@@ -103,6 +104,8 @@ DeviceEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.6  | 2025-05-28| minor | Added an entity mapping for Sentinel. |
+| 1.5  | 2025-03-21| minor | Additional performance improvement made for very large environments. |
 | 1.4  | 2023-05-04| minor | Updated broken URL in documentation. |
 | 1.3  | 2022-12-13| minor | Removed records with empty SHA1 to avoid false positives. |
 | 1.2  | 2022-11-07| minor | Added extra filters for false positives caused by a specific commandline argument of tasklist. |

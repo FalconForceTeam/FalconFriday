@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ConnectionSuccess||Network Traffic|Network Connection Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceNetworkEvents|ConnectionSuccess||Network Traffic|Network Connection Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query first collects the IP addresses of all machines that have the Active Directory Web Services (ADWS) service running. It then searches for network connections to these IP addresses from processes that are not expected to connect to ADWS.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 ADWS is a Windows service that allows Active Directory to be queried via a web service. While this service is not
 malicious by itself, it can be used by attackers to query Active Directory from compromised machines.
 

@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -20,19 +18,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AzureActiveDirectory|Sign-in activity||Logon Session|Logon Session Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AzureActiveDirectory|SigninLogs|Sign-in activity||Logon Session|Logon Session Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for logins with an expired access credential, for example, an expired cookie. It then matches the IP address from which the expired credential access occurred with the IP addresses of successful logins. If there are logins with expired credentials, but no successful logins from an IP this might indicate an attacker has copied the authentication cookie and is re-using it on another machine.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers can gain access to Azure AD protected resources by stealing an authentication token or cookie from a web-browser and then injecting that stolen cookie into a different system.
 
 
@@ -68,7 +68,7 @@ If an attacker only uses the authentication cookie while it is still valid this 
 // Timeframe to search for failed logins.
 let timeframe = 2*1d;
 let RuleId = "0091";
-let DedupFields = dynamic(["TimeGenerated"]);
+let DedupFields = dynamic(["UserPrincipalName"]);
 // Timeframe to look back for successful logins from the same user by IP.
 let lookback=3d;
 let SuspiciousSignings=(
@@ -118,6 +118,7 @@ SuspiciousSignings
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.4  | 2025-05-23| minor | Updated dedup_fields to match the query output columns. |
 | 1.3  | 2023-01-03| minor | Entity mapping added. |
 | 1.2  | 2022-08-26| minor | Entity mapping added. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |

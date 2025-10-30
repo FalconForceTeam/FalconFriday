@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -17,19 +15,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AWS|||Cloud Service|Cloud Service Modification|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AWS|AWSCloudTrail|||Cloud Service|Cloud Service Modification|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for API calls made by credentials originating from an instance profile. It creates a summary of the external IP addresses used for these calls. When the same instance is observed making calls from multiple IP addresses, this is considered suspicious and the rule triggers.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 When an attacker gains access to an EC2 instance in AWS, the metadata of that instance can be extracted via the metadata endpoint. This metadata can include access credentials linked to the instance via instance profiles. The attacker can load these credentials in their own system and use them to access AWS APIs.
 
 
@@ -88,7 +88,7 @@ InstanceAPICalls
 // Find the first event issued by the Source IP that made the least number of calls since that is likely to be
 // a request issued by the attacker.
 | summarize arg_min(TimeGenerated, *), EventCount=count(), EventNames=make_set(EventName) by InstanceId, SourceIpAddress
-| summarize arg_min(EventCount,*), ObservedIps=make_set(SourceIpAddress),RequestCountByIp=make_bag(pack(SourceIpAddress, EventCount)),EventsByIp=make_bag(pack(SourceIpAddress, EventNames)) by InstanceId
+| summarize arg_min(EventCount,*), ObservedIps=make_set(SourceIpAddress),RequestCountByIp=make_bag(bag_pack(SourceIpAddress, EventCount)),EventsByIp=make_bag(bag_pack(SourceIpAddress, EventNames)) by InstanceId
 // Begin environment-specific filter.
 // End environment-specific filter.
 // Begin de-duplication logic.
@@ -115,6 +115,8 @@ InstanceAPICalls
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 2.0  | 2025-08-12| major | Updated query to use the bag_pack() function instead of the deprecated pack(). |
+| 1.3  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.2  | 2022-08-25| minor | Entity mapping added. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |
 | 1.0  | 2022-02-02| major | Initial version. |

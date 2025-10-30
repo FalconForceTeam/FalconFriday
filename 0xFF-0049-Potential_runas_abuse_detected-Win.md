@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -18,20 +16,22 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Process|Process Creation|
-|MicrosoftThreatProtection|LogonSuccess||Logon Session|Logon Session Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
+|MicrosoftThreatProtection|DeviceLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query detects the use of the runas command and checks whether the account used to elevate privileges isn't the user's own admin account. Additionally, it will match this event to the logon events to check whether it has been successful, as well as augment the event with the new SID.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 The runas command might be abused by an attacker to elevate privileges to that of another account for which the credentials have been compromised.
 
 

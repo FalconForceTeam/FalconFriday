@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ProcessCreated||Process|Process Creation|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches process creation events that are indicative of an attacker spawning OS commands from an Oracle database.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers can use database systems such as Oracle to laterally move through the network by using command execution functionality in these databases.
 
 
@@ -43,11 +43,15 @@ Some legitimate Oracle plugins will also perform command execution. Such plugins
 
 
 ## Suggested Response Actions
-Investigate the source of the command being executed. This could be indicative of an attacker attempting to perform lateral movement.
+Verify whether legitimate business or operational reasons exist for the user account to execute commands from the database workspace.
+
+In case of a suspected breach or insider threat:
+* Review the latest activities performed by the account that executed the commands to validate its roles and permissions for signs of compromise.
+* Investigate the relationship of the Oracle process that performed the suspicious command with its parent, including executable names, command-line arguments and execution paths, and consider isolating any compromised hosts.
 
 
 ## Detection Blind Spots
-None.
+None expected.
 
 
 ## References
@@ -78,6 +82,7 @@ DeviceProcessEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.4  | 2025-05-20| minor | Enhanced response plan actions. |
 | 1.3  | 2024-06-06| minor | Added a filter for "ProcessCreated" actiontype, as MDE is rolling out other actiontypes as well. |
 | 1.2  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |
 | 1.1  | 2022-01-18| minor | Added werfault to filter. |

@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,12 +16,12 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|SecurityEvents|4768||Active Directory|Active Directory Credential Request|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|SecurityEvents|SecurityEvent|4768||Active Directory|Active Directory Credential Request|
 ---
 
-## Technical description of the attack
+## Detection description
 This query looks for TGT requests where the user authenticated with a client certificate which is unexpected for the environment.
 In most environments there are a number of use-cases for using client certificates.
 
@@ -31,10 +29,12 @@ In most environments there are a number of use-cases for using client certificat
 2) AzureAD SSO - The signer is "login.windows.net"
 3) Smartcard authentication for users - This can be distinguished by a specific issuer and certificate format.
 
+
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 Attackers abusing vulnerabilities in ADCS at some point need to authenticate against AD to obtain a valid Kerberos TGT ticket. This detection will trigger whenever an attacker requests a TGT with a certificate which has properties which are suspicious.
 
 
@@ -81,6 +81,7 @@ SecurityEvent
 | where not(CertIssuerName has "/login.windows.net/") // Attackers abusing existing certificate templates can't fake the issuer, so this check is sufficient.
 | where not(CertIssuerName matches regex @"(?i)^MS-Organization-P2P-Access \[\d\d\d\d\]$")
 | extend HostCustomEntity=tostring(split(Computer,".")[0])
+| extend HostName=tostring(split(Computer,".")[0]),DnsDomain=iif(Computer contains ".", substring(Computer, indexof(Computer, ".") + 1, strlen(Computer)),"")
 // Begin environment-specific filter.
 // End environment-specific filter.
 // Begin de-duplication logic.
@@ -107,4 +108,5 @@ SecurityEvent
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.1  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.0  | 2022-07-05| major | Initial version. |

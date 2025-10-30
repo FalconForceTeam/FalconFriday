@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -17,20 +15,22 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AzureActiveDirectory|Sign-in activity||Logon Session|Logon Session Metadata|
-|AzureActiveDirectory|Sign-in activity||Logon Session|Logon Session Metadata|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AzureActiveDirectory|SigninLogs|Sign-in activity||Logon Session|Logon Session Metadata|
+|AzureActiveDirectory|AADNonInteractiveUserSignInLogs|Sign-in activity||Logon Session|Logon Session Metadata|
 ---
 
-## Technical description of the attack
+## Detection description
 This query extracts the operating system from the UserAgent header and compares this to the DeviceDetail information present in Azure Active Directory.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 An attacker might be able to steal an access token for a particular device and use that to use Azure AD applications on another device, bypassing certain restrictions.
 
 

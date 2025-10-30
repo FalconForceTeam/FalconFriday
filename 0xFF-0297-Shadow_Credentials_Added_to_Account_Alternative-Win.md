@@ -5,32 +5,32 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
 
 | Tactic | Technique | Subtechnique | Technique Name |
 |---|---|---| --- |
-| TA0004 - Privilege Escalation | T1484 |  | Domain Policy Modification|
+| TA0004 - Privilege Escalation | T1484 |  | Domain or Tenant Policy Modification|
 | TA0003 - Persistence | T1098 |  | Account Manipulation|
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|SecurityEvents|4662||Active Directory|Active Directory Object Modification|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|SecurityEvents|SecurityEvent|4662||Active Directory|Active Directory Object Modification|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for modifications to the 'msDS-KeyCredentialLink' property in Active Directory. There are two different events which contain information to detect such changes: 5136 and 4662. This detection uses the 4662, which is an alternative if 5136 is not available.
+
 
 
 ## Permission required to execute the technique
 Administrator
 
-## Detection description
+
+## Description of the attack
 Windows Hello for Business (WHfB) supports multi-factor passwordless authentication. When the user or computer enrolls, the TPM generates a public-private key pair for the relevant account. The public key is stored in a new Key Credential object in the msDS-KeyCredentialLink attribute of the account. When a client logs in, Windows attempts to perform PKINIT authentication using their private key. Under the Key Trust model, the Domain Controller can decrypt their pre-authentication data using the raw public key in the corresponding NGC object stored in the client's msDS-KeyCredentialLink attribute. Attackers can abuse this property to gain local administrator access to a computer. Various attack tools such as Whisker, DSInternals and ntlmrelayx include functionality to modify this property.
 
 
@@ -75,6 +75,8 @@ SecurityEvent
 | where EventID == 4662
 | where Properties has "5b47d60f-6090-40b2-9f37-2a4de88f3063" // msDS-KeyCredentialLink.
 | where Properties has "%%7685" or (binary_and(toint(AccessMask), 0x10) == 0x10) // "Write Property" or "Write Extended Attributes": https://gist.github.com/brianreitz/d5b9397a2e8b3d52ceb9359897e07c3f
+| extend HostName=tostring(split(Computer,".")[0]),DnsDomain=iif(Computer contains ".", substring(Computer, indexof(Computer, ".") + 1, strlen(Computer)),"")
+| extend AccountName=iif(Account contains @"\",tostring(split(Account,@"\")[1]),Account),AccountDomain=iif(Account contains @"\",tostring(split(Account,@"\")[0]),"")    
 // Begin environment-specific filter.
 // End environment-specific filter.
 // Begin de-duplication logic.
@@ -101,5 +103,6 @@ SecurityEvent
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.2  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.1  | 2024-02-02| minor | Added logic to include attempts to write extended attributes. This can be used to detect failed attempts to update the shadow credential link. |
 | 1.0  | 2022-06-17| major | Initial version. |

@@ -5,8 +5,6 @@
 
 **OS:** N/A
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -19,21 +17,23 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|AWS|ListRoles||Application Log|Application Log Content|
-|AWS|GetAccountAuthorizationDetails||Application Log|Application Log Content|
-|AWS|ListUsers||Application Log|Application Log Content|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|AWS|AWSCloudTrail|ListRoles||Application Log|Application Log Content|
+|AWS|AWSCloudTrail|GetAccountAuthorizationDetails||Application Log|Application Log Content|
+|AWS|AWSCloudTrail|ListUsers||Application Log|Application Log Content|
 ---
 
-## Technical description of the attack
+## Detection description
 This query searches for certain discovery commands such as `ListRoles` and `ListUsers` being executed using credentials originating from an instance profile.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 When an attacker gains access to an EC2 instance in AWS, the metadata of that instance can be extracted via the metadata endpoint. This metadata can include access credentials linked to the instance via instance profiles. The attacker can extract these credentials and use them to access other services in AWS.
 
 
@@ -103,6 +103,7 @@ AWSCloudTrail
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.4  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.3  | 2023-07-26| minor | Updated the EventName list and enhanced the detection logic. |
 | 1.2  | 2022-08-25| minor | Entity mapping added. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |

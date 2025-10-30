@@ -5,8 +5,6 @@
 
 **OS:** WindowsEndpoint, WindowsServer
 
-**FP Rate:** Low
-
 ---
 
 ## ATT&CK Tags
@@ -18,19 +16,21 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|NamedPipeEvent||Named Pipe|Named Pipe Metadata|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceEvents|NamedPipeEvent||Named Pipe|Named Pipe Metadata|
 ---
 
-## Technical description of the attack
-This rule looks for Named Pipe events that either contain one of the known IOCs or make use of patterns that can be linked to CobaltStrike usage.
+## Detection description
+This rule looks for Named Pipe events that either contain one of the known IOCs or use patterns that can be linked to CobaltStrike usage.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 CobaltStrike is used as a post-exploitation tool with various malware droppers responsible for the initial infection stage. Named pipes are used to send the output of the post-exploitation tools to the beacon. CobaltStrike is using default unique pipe names, which defenders can use for detection. However, CobaltStrike allows the operators to change the name of the pipes to any name of their choosing by configuring the malleable C2 profile accordingly.
 
 
@@ -43,7 +43,11 @@ None expected.
 
 
 ## Suggested Response Actions
-Investigate this host immediately, when the pipe name and originating process look suspicious isolate the machine and validate where the file came from and where the host has been communicating.
+Evaluate named pipe instances against historical usage baselines to identify rare or non-conforming names that may align with customizable C2 infrastructure or evasion techniques.
+
+In case of a suspected breach or insider threat:
+* Investigate the parent and child process relationship, including executable names, command-line arguments, and execution paths for characteristics indicative of post-exploitation frameworks or unauthorized privilege escalation.
+* Review inbound and outbound connections from the host to identify suspicious or unauthorized external destinations and consider isolating the system to prevent further later movement activities.
 
 
 ## Detection Blind Spots
@@ -98,6 +102,7 @@ DeviceEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.3  | 2025-05-20| minor | Enhanced response plan actions. |
 | 1.2  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |
-| 1.1  | 2022-01-14| major | Additional pipe and big performance tweaks |
+| 1.1  | 2022-01-14| minor | Additional pipe and big performance tweaks |
 | 1.0  | 2021-12-24| major | Initial version |

@@ -5,8 +5,6 @@
 
 **OS:** WindowsServer, WindowsEndpoint
 
-**FP Rate:** Medium
-
 ---
 
 ## ATT&CK Tags
@@ -19,19 +17,24 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|CreateRemoteThreadApiCall||Process|Process Access|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceEvents|CreateRemoteThreadApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|NtAllocateVirtualMemoryRemoteApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|QueueUserApcRemoteApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|NtMapViewOfSectionRemoteApiCall||Process|Process Access|
 ---
 
-## Technical description of the attack
-This query searches for processes performing remote process injection via the CreateRemoteThread API call. It filters out programs that inject into their own process or into a process from the same directory. It then finds suspicious processes based on the global prevalence.
+## Detection description
+This query searches for processes performing remote process injection via multiple API calls related to process injection. It filters out programs that inject into their own process or into a process from the same directory. It then finds suspicious processes based on the global prevalence.
+
 
 
 ## Permission required to execute the technique
 User
 
-## Detection description
+
+## Description of the attack
 This query identifies uncommon binaries performing process injection into other processes.
 
 
@@ -48,7 +51,7 @@ This incident is very hard to investigate without any context. The best approach
 
 
 ## Detection Blind Spots
-There are many different methods to perform process injection. This query only identifies process injection using the CreateRemoteThread method.
+There are many different methods to perform process injection that are not covered by Microsoft Defender for Endpoint.
 
 
 ## References
@@ -65,39 +68,25 @@ There are many different methods to perform process injection. This query only i
 ```C#
 let timeframe = 2*1h;
 let default_global_prevalence = 0;
-let allDeviceEvents = materialize(
-DeviceEvents
-| where ingestion_time() >= ago(timeframe)
-| where ActionType =~ "CreateRemoteThreadApiCall" and ProcessId != InitiatingProcessId
-| where not(InitiatingProcessFolderPath startswith FolderPath) // Exclude injection into processes in the same directory.
+let AllProcessInjectionEvents = materialize(
+    DeviceEvents
+    | where ingestion_time() >= ago(timeframe)
+    | where ActionType in~ ("QueueUserApcRemoteApiCall","NtAllocateVirtualMemoryRemoteApiCall", "CreateRemoteThreadApiCall", "NtMapViewOfSectionRemoteApiCall") and ProcessId != InitiatingProcessId
+    | extend InitiatingProcessSHA1=tolower(InitiatingProcessSHA1)
+    | where not(InitiatingProcessFolderPath startswith FolderPath) // Exclude injection into processes in the same directory.
 );
-let suspiciousCRTSHA1 = allDeviceEvents
-| where not(isempty(InitiatingProcessSHA1)) // Only with a valid SHA1.
-| summarize MachineCount=dcount(DeviceId)  by InitiatingProcessSHA1
-// Take 1000 of the most unique hashes, as files with high prevalence are very likely to be legitly signed.
-| top 1000 by MachineCount asc
-// FileProfile is case sensistive and works on lower-case hashes
-| extend InitiatingProcessSHA1=tolower(InitiatingProcessSHA1)
-| invoke FileProfile(InitiatingProcessSHA1, 1000)
-| where not(ProfileAvailability =~ "Error")
-| where coalesce(GlobalPrevalence,default_global_prevalence) < 200 or ((isempty(Signer) or not(IsCertificateValid)) and coalesce(GlobalPrevalence,default_global_prevalence) < 500);
-let suspiciousCRTSMD5 = allDeviceEvents
-// In some rare edge cases, the SHA1 is empty while MD5 is there. Get those as well.
-| where isempty(InitiatingProcessSHA1) and isnotempty(InitiatingProcessMD5)
-| summarize MachineCount=dcount(DeviceId)  by InitiatingProcessMD5
-// Take 1000 of the most unique hashes, as files with high prevalence are very likely to be legitly signed.
-| top 1000 by MachineCount asc
-// FileProfile is case-sensitive and works on lower-case hashes.
-| extend InitiatingProcessMD5=tolower(InitiatingProcessMD5)
-| invoke FileProfile(InitiatingProcessMD5, 1000)
-| where not(ProfileAvailability =~ "Error")
-| where coalesce(GlobalPrevalence,default_global_prevalence) < 200 or ((isempty(Signer) or not(IsCertificateValid)) and coalesce(GlobalPrevalence,default_global_prevalence) < 500);
-DeviceEvents
-| where ingestion_time() >= ago(timeframe)
-| where ActionType =~ "CreateRemoteThreadApiCall" and ProcessId != InitiatingProcessId
-| extend InitiatingProcessMD5=tolower(InitiatingProcessMD5), InitiatingProcessSHA1=tolower(InitiatingProcessSHA1)
-| where InitiatingProcessSHA1 in~ ((suspiciousCRTSHA1 | project InitiatingProcessSHA1)) or
-  InitiatingProcessMD5 in ((suspiciousCRTSMD5 | project InitiatingProcessMD5))
+let SuspiciousProcessInjectionEvents = (
+    AllProcessInjectionEvents
+    | where not(isempty(InitiatingProcessSHA1)) // Only with a valid SHA1.
+    | summarize MachineCount=dcount(DeviceId) by InitiatingProcessSHA1
+    // Take 1000 of the most unique hashes, as files with high prevalence are very likely to be legitly signed.
+    | top 1000 by MachineCount asc
+    | invoke FileProfile(InitiatingProcessSHA1, 1000)
+    | where not(ProfileAvailability =~ "Error")
+    | where coalesce(GlobalPrevalence,default_global_prevalence) < 200 or ((isempty(Signer) or not(IsCertificateValid)) and coalesce(GlobalPrevalence,default_global_prevalence) < 500)
+);
+AllProcessInjectionEvents
+| lookup kind=inner SuspiciousProcessInjectionEvents on InitiatingProcessSHA1
 // Work around the Defender limitation where FolderPath for CreateRemoteThreadApiCall does not contain FileName where it does for other events.
 | extend InjectionTarget=strcat(FolderPath,@"\",FileName)
 // Begin environment-specific filter.
@@ -112,6 +101,7 @@ DeviceEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 2.0  | 2025-03-28| major | Combined existing use-cases for different process injection techniques into one use-case. |
 | 1.8  | 2024-06-28| minor | Modified the usage of FileProfile to exclude results if the call to the FileProfile API has failed. |
 | 1.7  | 2023-01-03| minor | Lowered the case of hashes that are fed to the FileProfile function due to case sensitivity. |
 | 1.6  | 2022-11-01| minor | Use default_global_prevalence variable to allow customizing handling of empty GlobalPrevalence |

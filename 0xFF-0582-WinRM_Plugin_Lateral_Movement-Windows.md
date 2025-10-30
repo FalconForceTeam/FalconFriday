@@ -15,12 +15,12 @@
 
 ## Utilized Data Sources
 
-| Log Provider | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
-|---------|---------|----------|---------|---------|
-|MicrosoftThreatProtection|ImageLoaded||Module|Module Load|
-|MicrosoftThreatProtection|FileCreated||Module|Module Load|
-|MicrosoftThreatProtection|FileRenamed||Module|Module Load|
-|MicrosoftThreatProtection|FileModified||Module|Module Load|
+| Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
+|---------|---------|---------|----------|---------|---------|
+|MicrosoftThreatProtection|DeviceImageLoadEvents|ImageLoaded||Module|Module Load|
+|MicrosoftThreatProtection|DeviceFileEvents|FileCreated||Module|Module Load|
+|MicrosoftThreatProtection|DeviceFileEvents|FileRenamed||Module|Module Load|
+|MicrosoftThreatProtection|DeviceFileEvents|FileModified||Module|Module Load|
 ---
 
 ## Detection description
