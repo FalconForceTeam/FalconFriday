@@ -19,6 +19,7 @@
 |---------|---------|---------|----------|---------|---------|
 |AzureActiveDirectory|SigninLogs|Sign-in activity||Logon Session|Logon Session Metadata|
 |AzureActiveDirectory|AADNonInteractiveUserSignInLogs|Sign-in activity||Logon Session|Logon Session Metadata|
+
 ---
 
 ## Detection description
@@ -109,7 +110,7 @@ let QueryUserAgents = (start_time:timespan, end_time:timespan) {
     union withsource=tbl_name AADNonInteractiveUserSignInLogs, SigninLogs
     | where ingestion_time() >= ago(start_time)
     | where ingestion_time() < ago(end_time)
-    | where ResultType == 0  // Only look at successful logins.
+    | where ResultType == 0  or ResultType == 50140 // Only look at successful logins, with or without 'Keep me signed in'.
     | extend ParsedUserAgent=ExtractBrowserTypeFromUA(UserAgent)
     | extend UserAgentType=tostring(ParsedUserAgent.AgentType)
     | extend UserAgentName=tostring(ParsedUserAgent.AgentName)
@@ -162,6 +163,7 @@ QueryUserAgents(timeframe, 0d)
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 2.1  | 2026-04-28| minor | Updated the logic to also support ResultType 50140 which is a successful login without "Keep me signed in". |
 | 2.0  | 2025-08-12| major | Updated query to use the bag_pack() function instead of the deprecated pack(). |
 | 1.4  | 2025-05-23| minor | Updated dedup_fields to match the query output columns. |
 | 1.3  | 2023-06-23| minor | Updated check for MSAL User-Agent to remove false-positives. |

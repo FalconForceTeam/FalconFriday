@@ -21,6 +21,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |AzureActiveDirectory|SigninLogs|Sign-in activity||Logon Session|Logon Session Creation|
+
 ---
 
 ## Detection description
@@ -85,7 +86,7 @@ let SuccessLogins=(
     SigninLogs
     | where TimeGenerated >= ago(lookback)
     | where UserPrincipalName in~ ((SuspiciousSignings | project UserPrincipalName))
-    | where ResultType == 0
+    | where ResultType == 0 or ResultType == 50140 // Successful logins, with or without 'Keep me signed in'.
     | summarize count() by UserPrincipalName, IPAddress
 );
 SuspiciousSignings
@@ -118,6 +119,7 @@ SuspiciousSignings
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.5  | 2026-04-28| minor | Updated the logic to also support ResultType 50140 which is a successful login without "Keep me signed in". |
 | 1.4  | 2025-05-23| minor | Updated dedup_fields to match the query output columns. |
 | 1.3  | 2023-01-03| minor | Entity mapping added. |
 | 1.2  | 2022-08-26| minor | Entity mapping added. |

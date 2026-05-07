@@ -19,6 +19,7 @@
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Command|Command Execution|
 |MicrosoftThreatProtection|DeviceLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
+
 ---
 
 ## Detection description

@@ -18,6 +18,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceImageLoadEvents|ImageLoaded||Module|Module Load|
+
 ---
 
 ## Detection description
@@ -101,6 +102,7 @@ loadedDlls
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.8  | 2026-04-13| minor | Added indentation to Jinja variables. |
 | 1.7  | 2025-05-19| minor | Enhanced response plan actions. |
 | 1.6  | 2024-06-28| minor | Modified the usage of FileProfile to exclude results if the call to the FileProfile API has failed. |
 | 1.5  | 2023-01-03| minor | Lowered the case of hashes that are fed to the FileProfile function due to case sensitivity. |

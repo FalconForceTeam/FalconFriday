@@ -19,6 +19,7 @@
 |---------|---------|---------|----------|---------|---------|
 |AzureActiveDirectory|SigninLogs|Sign-in activity||Logon Session|Logon Session Metadata|
 |AzureActiveDirectory|AADNonInteractiveUserSignInLogs|Sign-in activity||Logon Session|Logon Session Metadata|
+
 ---
 
 ## Detection description
@@ -93,7 +94,7 @@ union withsource=tbl_name AADNonInteractiveUserSignInLogs, SigninLogs
 | extend UserAgentOS=tolower(ExtractOSFromUA(UserAgent))
 | where not(isempty(UserAgent))
 | where not(isempty(AppId))
-| where ResultType == 0
+| where ResultType == 0 or ResultType == 50140 // Successful logins, with or without 'Keep me signed in'.
 | extend DeviceOS=tolower(DeviceDetail_dynamic.operatingSystem)
 | where not(isempty(DeviceOS))
 | where not(UserAgentOS =~ "unknown")
@@ -130,6 +131,7 @@ union withsource=tbl_name AADNonInteractiveUserSignInLogs, SigninLogs
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.4  | 2026-04-28| minor | Updated the logic to also support ResultType 50140 which is a successful login without "Keep me signed in". |
 | 1.3  | 2024-03-04| minor | Removed spaces when comparing UserAgentOS and DeviceOS to avoid false positives. |
 | 1.2  | 2022-08-26| minor | Entity mapping added. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |

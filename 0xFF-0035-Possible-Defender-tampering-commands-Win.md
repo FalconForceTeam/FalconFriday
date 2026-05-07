@@ -19,6 +19,7 @@
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Command|Command Execution|
 |MicrosoftThreatProtection|DeviceEvents|PowerShellCommand||Script|Script Execution|
+
 ---
 
 ## Detection description

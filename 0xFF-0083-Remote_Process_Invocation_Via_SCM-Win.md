@@ -22,6 +22,7 @@
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 |MicrosoftThreatProtection|DeviceNetworkEvents|ConnectionSuccess||Network Traffic|Network Connection Creation|
+
 ---
 
 ## Detection description

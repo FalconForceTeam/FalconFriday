@@ -20,6 +20,7 @@
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 |MicrosoftThreatProtection|DeviceLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
+
 ---
 
 ## Detection description
@@ -94,6 +95,7 @@ RunAsProcess
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.6  | 2026-04-13| minor | Added indentation to Jinja variables. |
 | 1.5  | 2024-06-06| minor | Added a filter for "ProcessCreated" actiontype, as MDE is rolling out other actiontypes as well. |
 | 1.4  | 2023-02-14| minor | Updated the query to fix KQL parsing warnings. |
 | 1.3  | 2022-10-19| minor | Modified regex for extracting the username when the shortend "/u:" commandline parameter is used. |

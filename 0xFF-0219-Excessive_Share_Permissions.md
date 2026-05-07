@@ -19,6 +19,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |SecurityEvents|SecurityEvent|5143||Network Share|Network Share Access|
+
 ---
 
 ## Detection description

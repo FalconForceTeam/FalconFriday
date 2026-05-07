@@ -18,6 +18,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |AWS|AWSCloudTrail|||Cloud Service|Cloud Service Modification|
+
 ---
 
 ## Detection description
@@ -42,7 +43,11 @@ There might be EC2 machines that have multiple external IP addresses. These will
 
 
 ## Suggested Response Actions
-The EC2 instance ID is available in the `InstanceId` field. The events called per remote IP address are in the `EventsByIp` field. Confirm if the EC2 instance is expected to be using multiple external IP addresses for AWS API calls. Investigate if the additional IPs identified are related to AWS or another provider.
+Verify whether legitimate business or operational reasons exist for the instance to communicate with the suspicious IPs.
+
+In case of a suspected breach or insider threat:
+* Review the latest activities performed by the instance role in the `EventsByIp` field and validate the permissions of role.
+* If malicious activity is verified, remove the instance role and review activities in the EC2 instance to establish the levels of access the threat actors could achieve.
 
 
 ## Detection Blind Spots
@@ -66,12 +71,15 @@ The detection relies on the `UserIdentityPrincipalid` containing `:i-` to detect
 let timeframe = 2*1d;
 let RuleId = "0240";
 let DedupFields = dynamic(["TimeGenerated"]);
+let AgentAPIs = dynamic(["AcknowledgeMessage","DeleteMessage","FailMessage","GetEndpoint","GetMessages","SendReply","CreateControlChannel","CreateDataChannel","OpenControlChannel","OpenDataChannel","DescribeDocumentParameters","DescribeInstanceProperties","GetCalendar","GetManifest","ListInstanceAssociations","PutCalendar","PutConfigurePackageResult","RegisterManagedInstance","RequestManagedInstanceRoleToken","UpdateInstanceAssociationStatus","UpdateInstanceInformation","UpdateManagedInstancePublicKey"]);
 let InstanceAPICalls=(
     AWSCloudTrail
     | where ingestion_time() >= ago(timeframe)
+    | where EventName !in~ (AgentAPIs) // Exclude SSM Agent API calls
     | where UserIdentityPrincipalid contains_cs ":i-"
     | parse UserIdentityPrincipalid with * ":i-" InstanceId
     | where not(ipv4_is_match(SourceIpAddress, "198.18.0.0/15")) // AWS interconnect.
+    | where not(ipv4_is_in_range(SourceIpAddress, "18.202.0.0/15") or ipv4_is_in_range(SourceIpAddress, "34.240.0.0/12") or ipv4_is_in_range(SourceIpAddress, "52.16.0.0/15")) // AWS IP ranges.
     | where not(SourceIpAddress =~ "AWS Internal")
     | where not(ipv4_is_private(SourceIpAddress))
     // Begin environment-specific filter.
@@ -115,7 +123,8 @@ InstanceAPICalls
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
-| 2.0  | 2025-08-12| major | Updated query to use the bag_pack() function instead of the deprecated pack(). |
+| 2.1  | 2025-09-16| minor | Updated the query to exclude AWS-related API calls and IP ranges. Enhanced the response plan |
+| 2.0  | 2025-08-12| major | Updated the query to use the bag_pack() function instead of the deprecated pack(). |
 | 1.3  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.2  | 2022-08-25| minor | Entity mapping added. |
 | 1.1  | 2022-02-22| minor | Use ingestion_time for event selection and include de-duplication logic. |

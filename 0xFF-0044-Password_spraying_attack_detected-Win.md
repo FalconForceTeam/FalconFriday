@@ -20,6 +20,7 @@
 |MicrosoftThreatProtection|IdentityLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
 |MicrosoftThreatProtection|DeviceLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
 |MicrosoftThreatProtection|DeviceNetworkEvents|||||
+
 ---
 
 ## Detection description

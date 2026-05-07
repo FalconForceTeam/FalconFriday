@@ -1,4 +1,4 @@
-# AWDS Connection from Process Injection Target
+# ADWS Connection from Process Injection Target
 
 ## Metadata
 **ID:** 0xFF-0488-ADWS_Connection_from_Process_Injection_Target-Win
@@ -27,6 +27,7 @@
 |MicrosoftThreatProtection|DeviceEvents|NtMapViewOfSectionRemoteApiCall||Process|Process Access|
 |MicrosoftThreatProtection|DeviceEvents|SetThreadContextRemoteApiCall||Process|Process Access|
 |MicrosoftThreatProtection|DeviceEvents|QueueUserApcRemoteApiCall||Process|Process Access|
+
 ---
 
 ## Detection description
@@ -118,6 +119,8 @@ ADWSConnections
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.4  | 2026-04-13| minor | Added indentation to Jinja variables. |
+| 1.3  | 2025-10-23| minor | Fixed a typo in the name of the detection. |
 | 1.2  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.1  | 2023-12-18| minor | Added Sentinel entity mapping. |
 | 1.0  | 2023-11-27| major | Initial version. |

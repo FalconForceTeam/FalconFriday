@@ -18,6 +18,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |AWS|AWSCloudTrail|GetPasswordData||Application Log|Application Log Content|
+
 ---
 
 ## Detection description

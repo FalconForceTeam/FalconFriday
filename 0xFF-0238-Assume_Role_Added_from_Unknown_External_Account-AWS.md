@@ -19,6 +19,7 @@
 |---------|---------|---------|----------|---------|---------|
 |AWS|AWSCloudTrail|CreateRole||User Account|User Account Modification|
 |AWS|AWSCloudTrail|UpdateAssumeRolePolicy||User Account|User Account Modification|
+
 ---
 
 ## Detection description

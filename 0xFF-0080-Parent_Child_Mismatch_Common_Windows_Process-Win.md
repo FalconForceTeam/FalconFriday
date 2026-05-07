@@ -11,7 +11,7 @@
 
 | Tactic | Technique | Subtechnique | Technique Name |
 |---|---|---| --- |
-| TA0005 - Defense Evasion | T1036 | 003 | Masquerading - Rename System Utilities|
+| TA0005 - Defense Evasion | T1036 | 003 | Masquerading - Rename Legitimate Utilities|
 
 ## Utilized Data Sources
 
@@ -19,6 +19,7 @@
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 |MicrosoftThreatProtection|DeviceEvents|CreateRemoteThreadApiCall||Process|OS API Execution|
+
 ---
 
 ## Detection description

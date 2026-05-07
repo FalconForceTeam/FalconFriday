@@ -11,13 +11,14 @@
 
 | Tactic | Technique | Subtechnique | Technique Name |
 |---|---|---| --- |
-| TA0005 - Defense Evasion | T1036 | 003 | Masquerading - Rename System Utilities|
+| TA0005 - Defense Evasion | T1036 | 003 | Masquerading - Rename Legitimate Utilities|
 
 ## Utilized Data Sources
 
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
+
 ---
 
 ## Detection description

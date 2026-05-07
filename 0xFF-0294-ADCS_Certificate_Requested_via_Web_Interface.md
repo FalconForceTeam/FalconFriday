@@ -18,6 +18,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |AzureMonitor(IIS)|W3CIISLog|W3CIISLog||Application Log|Application Log Content|
+
 ---
 
 ## Detection description

@@ -19,6 +19,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |SecurityEvents|SecurityEvent|4662||Active Directory|Active Directory Object Modification|
+
 ---
 
 ## Detection description

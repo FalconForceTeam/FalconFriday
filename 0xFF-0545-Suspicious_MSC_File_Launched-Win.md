@@ -21,6 +21,7 @@
 |MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
 |MicrosoftThreatProtection|DeviceFileEvents|FileCreated||File|File Creation|
 |MicrosoftThreatProtection|DeviceFileEvents|FileRenamed||File|File Creation|
+
 ---
 
 ## Detection description

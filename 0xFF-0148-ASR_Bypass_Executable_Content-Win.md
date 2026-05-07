@@ -19,6 +19,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceFileEvents|FileCreated||File|File Creation|
+
 ---
 
 ## Detection description

@@ -21,6 +21,7 @@
 |MicrosoftThreatProtection|DeviceFileEvents|FileCreated||Module|Module Load|
 |MicrosoftThreatProtection|DeviceFileEvents|FileRenamed||Module|Module Load|
 |MicrosoftThreatProtection|DeviceFileEvents|FileModified||Module|Module Load|
+
 ---
 
 ## Detection description

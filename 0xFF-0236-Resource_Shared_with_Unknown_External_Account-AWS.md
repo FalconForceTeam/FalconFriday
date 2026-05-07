@@ -22,6 +22,7 @@
 |AWS|AWSCloudTrail|ModifySnapshotAttribute||Application Log|Application Log Content|
 |AWS|AWSCloudTrail|ModifyDBSnapshotAttribute||Application Log|Application Log Content|
 |AWS|AWSCloudTrail|PutBucketPolicy||Application Log|Application Log Content|
+
 ---
 
 ## Detection description

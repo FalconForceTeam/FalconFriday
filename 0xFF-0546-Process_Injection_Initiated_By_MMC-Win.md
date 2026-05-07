@@ -25,6 +25,7 @@
 |MicrosoftThreatProtection|DeviceEvents|NtAllocateVirtualMemoryRemoteApiCall||Process|Process Access|
 |MicrosoftThreatProtection|DeviceEvents|ReadProcessMemoryApiCall||Process|Process Access|
 |MicrosoftThreatProtection|DeviceEvents|SetThreadContextRemoteApiCall||Process|Process Access|
+
 ---
 
 ## Detection description

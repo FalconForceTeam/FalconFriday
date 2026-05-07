@@ -23,6 +23,8 @@
 |MicrosoftThreatProtection|DeviceEvents|NtAllocateVirtualMemoryRemoteApiCall||Process|Process Access|
 |MicrosoftThreatProtection|DeviceEvents|QueueUserApcRemoteApiCall||Process|Process Access|
 |MicrosoftThreatProtection|DeviceEvents|NtMapViewOfSectionRemoteApiCall||Process|Process Access|
+|MicrosoftThreatProtection|DeviceEvents|SetThreadContextRemoteApiCall||Process|Process Access|
+
 ---
 
 ## Detection description
@@ -71,7 +73,7 @@ let default_global_prevalence = 0;
 let AllProcessInjectionEvents = materialize(
     DeviceEvents
     | where ingestion_time() >= ago(timeframe)
-    | where ActionType in~ ("QueueUserApcRemoteApiCall","NtAllocateVirtualMemoryRemoteApiCall", "CreateRemoteThreadApiCall", "NtMapViewOfSectionRemoteApiCall") and ProcessId != InitiatingProcessId
+    | where ActionType in~ ("QueueUserApcRemoteApiCall","NtAllocateVirtualMemoryRemoteApiCall", "CreateRemoteThreadApiCall", "SetThreadContextRemoteApiCall", "NtMapViewOfSectionRemoteApiCall") and ProcessId != InitiatingProcessId
     | extend InitiatingProcessSHA1=tolower(InitiatingProcessSHA1)
     | where not(InitiatingProcessFolderPath startswith FolderPath) // Exclude injection into processes in the same directory.
 );
@@ -79,7 +81,7 @@ let SuspiciousProcessInjectionEvents = (
     AllProcessInjectionEvents
     | where not(isempty(InitiatingProcessSHA1)) // Only with a valid SHA1.
     | summarize MachineCount=dcount(DeviceId) by InitiatingProcessSHA1
-    // Take 1000 of the most unique hashes, as files with high prevalence are very likely to be legitly signed.
+    // Take 1000 of the most unique hashes, as files with high prevalence are very likely to be legitimately signed.
     | top 1000 by MachineCount asc
     | invoke FileProfile(InitiatingProcessSHA1, 1000)
     | where not(ProfileAvailability =~ "Error")
@@ -101,6 +103,8 @@ AllProcessInjectionEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 2.2  | 2026-02-12| minor | Extended the DeviceEvents actiontypes to also take SetThreadContextRemoteApiCall into account. |
+| 2.1  | 2025-10-23| minor | Fixed a typo in a comment in the detection logic. |
 | 2.0  | 2025-03-28| major | Combined existing use-cases for different process injection techniques into one use-case. |
 | 1.8  | 2024-06-28| minor | Modified the usage of FileProfile to exclude results if the call to the FileProfile API has failed. |
 | 1.7  | 2023-01-03| minor | Lowered the case of hashes that are fed to the FileProfile function due to case sensitivity. |

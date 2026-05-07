@@ -19,6 +19,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |SecurityEvents|SecurityEvent|4768||Active Directory|Active Directory Credential Request|
+
 ---
 
 ## Detection description

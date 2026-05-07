@@ -20,6 +20,7 @@
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceNetworkEvents|ConnectionSuccess||Network Traffic|Network Connection Creation|
 |MicrosoftThreatProtection|DeviceLogonEvents|LogonSuccess||Logon Session|Logon Session Creation|
+
 ---
 
 ## Detection description

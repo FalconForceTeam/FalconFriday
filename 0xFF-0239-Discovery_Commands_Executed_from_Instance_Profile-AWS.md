@@ -22,10 +22,11 @@
 |AWS|AWSCloudTrail|ListRoles||Application Log|Application Log Content|
 |AWS|AWSCloudTrail|GetAccountAuthorizationDetails||Application Log|Application Log Content|
 |AWS|AWSCloudTrail|ListUsers||Application Log|Application Log Content|
+
 ---
 
 ## Detection description
-This query searches for certain discovery commands such as `ListRoles` and `ListUsers` being executed using credentials originating from an instance profile.
+This query searches for discovery commands (such as `ListRoles` and `ListUsers`) exceeding a predefined threshold, executed using credentials originating from an instance profile within 4 hours. This can indicate a compromised EC2 machine with an instance profile being used for reconnaissance of the AWS environment.
 
 
 
@@ -46,7 +47,11 @@ There might be EC2 machines that issue these discovery commands for valid busine
 
 
 ## Suggested Response Actions
-The EC2 instance ID is available in the `UserIdentityPrincipalid` field. Confirm if the EC2 instance legitimately issued these discovery commands.
+Verify whether legitimate business or operational reasons exist for the instance to perform the suspicious operations.
+
+In case of a suspected breach or insider threat:
+* Review the latest activities performed by the SessionIssuerArn that initiated the instance role creation and validate the permissions of the role assigned to the instance.
+* If malicious activity is verified, remove the instance role and review activities in the EC2 instance to establish the levels of access the threat actors could achieve.
 
 
 ## Detection Blind Spots
@@ -54,7 +59,7 @@ The detection relies on the `UserIdentityPrincipalid` containing `:i-` to detect
 
 
 ## References
-* https://github.com/DataDog/stratus-red-team
+* https://stratus-red-team.cloud/attack-techniques/AWS/aws.discovery.ec2-enumerate-from-instance/
 * https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
 * https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html
 
@@ -68,15 +73,20 @@ The detection relies on the `UserIdentityPrincipalid` containing `:i-` to detect
 **Query:**
 ```C#
 let timeframe = 2*1h;
+let lookback = 4h;
 let RuleId = "0239";
 let DedupFields = dynamic(["TimeGenerated"]);
+let actionsThreshold = 4;
+let serviceAccessThreshold =  3;
 AWSCloudTrail
 | where ingestion_time() >= ago(timeframe)
 | where UserIdentityPrincipalid contains_cs ":i-"
-| where EventName in~ ("ListRoles","GetAccountAuthorizationDetails","ListUsers","ListAssociations","ListBuckets","GetSecretValue","DescribeInstances","ListGroups")
+| where EventName in~("DescribeInstances","DescribeSnapshots","DescribeTrails","GetAccountAuthorizationDetails","GetAccountSummary","GetCallerIdentity","GetSecretValue","ListAssociations","ListBuckets","ListDetectors","ListGroups","ListRoles","ListUsers") or EventSource startswith "secretsmanager."
 | extend Target_instance_id = tostring(parse_json(tostring(parse_json(tostring(parse_json(RequestParameters).instancesSet)).items))[0].instanceId)
 | extend Source_instance_id = tostring(split(UserIdentityArn, "/")[-1])
 | where not(Source_instance_id == Target_instance_id and EventName =~ "DescribeInstances")
+| summarize make_set(EventName), DistinctRequests = dcount(EventName), AccessedServices = dcount(EventSource), CountEvents = count() by UserIdentityArn, bin(TimeGenerated, lookback), SourceIpAddress
+| where DistinctRequests >= actionsThreshold and AccessedServices >= serviceAccessThreshold
 // Begin environment-specific filter.
 // End environment-specific filter.
 // Begin de-duplication logic.
@@ -103,6 +113,7 @@ AWSCloudTrail
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 2.0  | 2025-11-14| major | Added new EventNames and thresholds and updated query documentation. |
 | 1.4  | 2025-05-19| minor | Updated entity mapping to remove deprecated FullName field. |
 | 1.3  | 2023-07-26| minor | Updated the EventName list and enhanced the detection logic. |
 | 1.2  | 2022-08-25| minor | Entity mapping added. |

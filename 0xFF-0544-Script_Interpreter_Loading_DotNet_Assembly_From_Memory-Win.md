@@ -22,6 +22,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceEvents|ClrUnbackedModuleLoaded||Module|Module Load|
+
 ---
 
 ## Detection description

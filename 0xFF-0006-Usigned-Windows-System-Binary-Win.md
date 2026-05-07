@@ -11,7 +11,7 @@
 
 | Tactic | Technique | Subtechnique | Technique Name |
 |---|---|---| --- |
-| TA0005 - Defense Evasion | T1036 | 005 | Masquerading - Match Legitimate Name or Location|
+| TA0005 - Defense Evasion | T1036 | 005 | Masquerading - Match Legitimate Resource Name or Location|
 | TA0005 - Defense Evasion | T1036 | 001 | Masquerading - Invalid Code Signature|
 
 ## Utilized Data Sources
@@ -19,6 +19,7 @@
 | Log Provider | Table Name | Event ID | Event Name | ATT&CK Data Source | ATT&CK Data Component|
 |---------|---------|---------|----------|---------|---------|
 |MicrosoftThreatProtection|DeviceProcessEvents|ProcessCreated||Process|Process Creation|
+
 ---
 
 ## Detection description
@@ -100,6 +101,7 @@ DeviceProcessEvents
 ## Version History
 | Version | Date | Impact | Notes |
 |---------|------|--------|------|
+| 1.7  | 2026-04-13| minor | Added indentation to Jinja variables. |
 | 1.6  | 2024-06-28| minor | Modified the usage of FileProfile to exclude results if the call to the FileProfile API has failed. |
 | 1.5  | 2024-06-06| minor | Added a filter for "ProcessCreated" actiontype, as MDE is rolling out other actiontypes as well. |
 | 1.4  | 2023-01-03| minor | Lowered the case of hashes that are fed to the FileProfile function due to case sensitivity. |
