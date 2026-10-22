@@ -56,7 +56,8 @@ DeviceProcessEvents
 ```
 
 ```sql
-/// This looks for machines with Defender on it that have PHP on them and adds InternetAccessible if it has inbound connections from PublicIPs or has been scanned by MS from the internet
+// This looks for machines with Defender on it that have PHP on them and adds InternetAccessible if it has inbound connections from PublicIPs or has been scanned by MS from the internet
+// Make sure to run this over at least the last 14d 
 DeviceTvmSoftwareInventory
 | where SoftwareName contains "php"
 | extend DeviceNameShort=tolower(extract("^[\\w-]+",0,DeviceName))
