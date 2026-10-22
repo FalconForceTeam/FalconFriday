@@ -41,7 +41,7 @@ DeviceProcessEvents
 | where DeviceId in~ ((signedSoftware | project DeviceId)) and SHA1 in~ ((signedSoftware | project SHA1))
 ```
 
-```
+```sql
 // All subprocesses from PHP as a start for a hunt, needs filtering based on what is known normal behavior by environment
 // Option is to to anti join with behavior from more than a week ago to remove most noise. This can cause blind spots
 DeviceProcessEvents
@@ -55,7 +55,7 @@ DeviceProcessEvents
 | summarize count() by DeviceId, DeviceName, tostring(Executions), InitiatingProcessFileName
 ```
 
-```
+```sql
 /// This looks for machines with Defender on it that have PHP on them and adds InternetAccessible if it has inbound connections from PublicIPs or has been scanned by MS from the internet
 DeviceTvmSoftwareInventory
 | where SoftwareName contains "php"
